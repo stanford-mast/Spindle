@@ -1,17 +1,17 @@
 #!/bin/sh
 ###############################################################################
-# Grazelle
-#      High performance, hardware-optmized graph processing engine.
-#      Targets a single machine with one or more x86-based sockets.
+# libspindle
+#   Multi-platform topology-aware thread control library.
+#   Distributes a set of synchronized tasks over cores in the system.
 ###############################################################################
 # Authored by Samuel Grossman
 # Department of Electrical Engineering, Stanford University
 # (c) 2015-2016
 ###############################################################################
 # x-nasm-macros.sh
-#      Tranformation script for assembly macros, MASM -> NASM.
-#      Input is a MASM assembly file, output is an assembly file with all the
-#      macros changed to NASM format and nothing else changed.
+#   Tranformation script for assembly macros, MASM -> NASM.
+#   Input is a MASM assembly file, output is an assembly file with all the
+#   macros changed to NASM format and nothing else changed.
 ###############################################################################
 
 # Initialization

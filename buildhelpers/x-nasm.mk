@@ -1,15 +1,15 @@
 ###############################################################################
-# Grazelle
-#      High performance, hardware-optmized graph processing engine.
-#      Targets a single machine with one or more x86-based sockets.
+# libspindle
+#   Multi-platform topology-aware thread control library.
+#   Distributes a set of synchronized tasks over cores in the system.
 ###############################################################################
 # Authored by Samuel Grossman
 # Department of Electrical Engineering, Stanford University
 # (c) 2015-2016
 ###############################################################################
 # x-as.mk
-#      Defines the commands for transforming an assembly source file's syntax
-#      from MASM to NASM form.
+#   Defines the commands for transforming an assembly source file's syntax
+#   from MASM to NASM form.
 ###############################################################################
 
 X-AS    = egrep -v 'END[SP]?$$' \
