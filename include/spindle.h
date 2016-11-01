@@ -1,15 +1,15 @@
 /*****************************************************************************
  * libspindle
- *      Multi-platform topology-aware thread control library.
- *      Distributes a set of synchronized tasks over cores in the system.
+ *   Multi-platform topology-aware thread control library.
+ *   Distributes a set of synchronized tasks over cores in the system.
  *****************************************************************************
  * Authored by Samuel Grossman
  * Department of Electrical Engineering, Stanford University
  * Copyright (c) 2016
  *************************************************************************//**
  * @file spindle.h
- *      Declaration of external API functions.
- *      Top-level header file for this library, to be included externally.
+ *   Declaration of external API functions.
+ *   Top-level header file for this library, to be included externally.
  *****************************************************************************/
 
 #pragma once
@@ -62,8 +62,8 @@ extern "C" {
 
 /// Spawns threads according to the provided task specification.
 /// NUMA node indices must appear monotonically in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
-/// @param [in] taskspec Task specifications, as an array.
-/// @param [in] taskcount Number of tasks specified.
+/// @param [in] taskSpec Task specifications, as an array.
+/// @param [in] taskCount Number of tasks specified.
 /// @return 0 once all spawned threads have terminated, or nonzero in the event of an error.
 uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount);
 
@@ -108,16 +108,20 @@ void spindleSetLocalVariable(uint64_t value);
 uint64_t spindleGetLocalVariable(void);
 
 /// Provides a barrier that no thread can pass until all threads in the current group have reached this point in the execution.
+/// Useful for synchronization.
 void spindleBarrierLocal(void);
 
 /// Provides a barrier that no thread can pass until all threads have reached this point in the execution.
+/// Useful for synchronization.
 void spindleBarrierGlobal(void);
 
 /// Provides a barrier that no thread can pass until all threads in the current group have reached this point in the execution.
+/// Useful for synchronization, but this version measures the time a thread spends waiting.
 /// @return Number of cycles the calling thread spent waiting, captured using the `rdtsc` instruction.
 uint64_t spindleTimedBarrierLocal(void);
 
 /// Provides a barrier that no thread can pass until all threads have reached this point in the execution.
+/// Useful for synchronization, but this version measures the time a thread spends waiting.
 /// @return Number of cycles the calling thread spent waiting, captured using the `rdtsc` instruction.
 uint64_t spindleTimedBarrierGlobal(void);
 

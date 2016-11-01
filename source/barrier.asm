@@ -1,14 +1,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; libspindle
-;      Multi-platform topology-aware thread control library.
-;      Distributes a set of synchronized tasks over cores in the system.
+;   Multi-platform topology-aware thread control library.
+;   Distributes a set of synchronized tasks over cores in the system.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Authored by Samuel Grossman
 ; Department of Electrical Engineering, Stanford University
 ; Copyright (c) 2016
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; barrier.asm
-;      Implementation of thread barrier functionality.
+;   Implementation of thread barrier functionality.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 INCLUDE helpers.inc

@@ -1,16 +1,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; libspindle
-;      Multi-platform topology-aware thread control library.
-;      Distributes a set of synchronized tasks over cores in the system.
+;   Multi-platform topology-aware thread control library.
+;   Distributes a set of synchronized tasks over cores in the system.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Authored by Samuel Grossman
 ; Department of Electrical Engineering, Stanford University
 ; Copyright (c) 2016
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; registers.inc
-;      Name mappings for registers used throughout this library.
-;      Abstracts away platform-specific calling conventions.
-;      Otherwise improves readability of assembly code.
+;   Name mappings for registers used throughout this library.
+;   Abstracts away platform-specific calling conventions.
+;   Otherwise improves readability of assembly code.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 IFNDEF __SPINDLE_REGISTERS_INC
