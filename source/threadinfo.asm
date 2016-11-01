@@ -21,24 +21,24 @@ _TEXT                                       SEGMENT
 ; --------- FUNCTIONS ---------------------------------------------------------
 ; See "spindle.h" for documentation.
 
-spindleGetLocalThreadId                     PROC PUBLIC
-    spindleAsmHelperGetLocalThreadId                e_retval
+spindleGetLocalThreadID                     PROC PUBLIC
+    spindleAsmHelperGetLocalThreadID                e_retval
     ret
-spindleGetLocalThreadId                     ENDP
+spindleGetLocalThreadID                     ENDP
 
 ; ---------
 
-spindleGetGlobalThreadId                    PROC PUBLIC
-    spindleAsmHelperGetGlobalThreadId               e_retval
+spindleGetGlobalThreadID                    PROC PUBLIC
+    spindleAsmHelperGetGlobalThreadID               e_retval
     ret
-spindleGetGlobalThreadId                    ENDP
+spindleGetGlobalThreadID                    ENDP
 
 ; ---------
 
-spindleGetThreadGroupId                     PROC PUBLIC
-    spindleAsmHelperGetThreadGroupId                e_retval
+spindleGetThreadGroupID                     PROC PUBLIC
+    spindleAsmHelperGetThreadGroupID                e_retval
     ret
-spindleGetThreadGroupId                     ENDP
+spindleGetThreadGroupID                     ENDP
 
 ; ---------
 

@@ -70,17 +70,17 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount);
 /// Retrieves the current thread's local ID within its group.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
 /// @return Current thread's local ID.
-uint32_t spindleGetLocalThreadId(void);
+uint32_t spindleGetLocalThreadID(void);
 
 /// Retrieves the current thread's global ID, unique among all spawned threads.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
 /// @return Current thread's global ID.
-uint32_t spindleGetGlobalThreadId(void);
+uint32_t spindleGetGlobalThreadID(void);
 
 /// Retrieves the current thread's logical group number.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
 /// @return Current thread's group ID.
-uint32_t spindleGetThreadGroupId(void);
+uint32_t spindleGetThreadGroupID(void);
 
 /// Retrieves the number of threads in the current thread's logical group.
 /// Undefined return value if called outside the context of a code region parallelized by this library.

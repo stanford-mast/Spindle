@@ -12,32 +12,12 @@
  *****************************************************************************/
 
 #include "../spindle.h"
+#include "osthread.h"
+#include "types.h"
 
 #include <hwloc.h>
 #include <malloc.h>
 #include <stdint.h>
-
-
-// -------- TYPE DEFINITIONS ----------------------------------------------- //
-
-/// Internal data structure, used to provide each spawned thread with control and identification information.
-/// One such data structure exists per thread created during the spawning process.
-/// Each instance uniquely identifies and supplies sufficient information for each thread.
-typedef struct SSpindleThreadInfo
-{
-    TSpindleFunc func;                                                      ///< Starting function to call.
-    void* arg;                                                              ///< Argument to pass to the starting function.
-
-    hwloc_topology_t topology;                                              ///< System topology object from `hwloc`.
-    hwloc_obj_t affinityObject;                                             ///< Object from `hwloc` that identifies the PU to which the present thread should be affinitized.
-
-    uint32_t localThreadId;                                                 ///< Local thread ID. Can be obtained by calling spindleGetLocalThreadId.
-    uint32_t globalThreadId;                                                ///< Global thread ID. Can be obtained by calling spindleGetGlobalThreadId.
-    uint32_t threadGroupId;                                                 ///< Thread group ID. Can be obtained by calling spindleGetThreadGroupId.
-    uint32_t localThreadCount;                                              ///< Number of threads in the current thread's group. Can be obtained by calling spindleGetLocalThreadCount.
-    uint32_t globalThreadCount;                                             ///< Total number of threads spawned. Can be obtained by calling spindleGetGlobalThreadCount.
-    uint32_t groupCount;                                                    ///< Number of thread groups created. Can be obtained by calling spindleGetGroupCount.
-} SSpindleThreadInfo;
 
 
 // -------- HELPERS -------------------------------------------------------- //
@@ -127,6 +107,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
 {
     SSpindleThreadInfo* threadAssignments = NULL;
     uint32_t nextThreadAssignmentIndex = 0;
+    uint32_t threadResult = 0;
     
     hwloc_topology_t topology;
     hwloc_obj_t numaNodeObject = NULL;
@@ -321,9 +302,9 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             threadAssignments[nextThreadAssignmentIndex].arg = taskSpec[taskIndex].arg;
             threadAssignments[nextThreadAssignmentIndex].topology = topology;
             threadAssignments[nextThreadAssignmentIndex].affinityObject = spindleHelperGetThreadAffinityObject(topology, taskStartPhysCore[taskIndex], taskEndPhysCore[taskIndex], threadIndex, taskSpec[taskIndex].smtPolicy);
-            threadAssignments[nextThreadAssignmentIndex].localThreadId = threadIndex;
-            threadAssignments[nextThreadAssignmentIndex].globalThreadId = nextThreadAssignmentIndex;
-            threadAssignments[nextThreadAssignmentIndex].threadGroupId = taskIndex;
+            threadAssignments[nextThreadAssignmentIndex].localThreadID = threadIndex;
+            threadAssignments[nextThreadAssignmentIndex].globalThreadID = nextThreadAssignmentIndex;
+            threadAssignments[nextThreadAssignmentIndex].threadGroupID = taskIndex;
             threadAssignments[nextThreadAssignmentIndex].localThreadCount = taskNumThreads[taskIndex];
             threadAssignments[nextThreadAssignmentIndex].globalThreadCount = totalNumThreads;
             threadAssignments[nextThreadAssignmentIndex].groupCount = taskCount;
@@ -332,8 +313,11 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         }
     }
     
+    // Create the threads and wait for the result.
+    threadResult = spindleCreateThreads(threadAssignments, totalNumThreads);
+    
     // Destroy the hardware topology, free allocated memory, and return.
     hwloc_topology_destroy(topology);
     free((void*)threadAssignments);
-    return 0;
+    return threadResult;
 }

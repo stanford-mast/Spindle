@@ -18,6 +18,15 @@
     <ClInclude Include="include\spindle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\spindle\osthread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spindle\types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spindle\init.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\spindle\helpers.inc">
@@ -31,12 +40,21 @@
     <ClCompile Include="source\spawn.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\osthread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\osthread-windows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\threadinfo.asm">
       <Filter>Source Files</Filter>
     </MASM>
     <MASM Include="source\barrier.asm">
+      <Filter>Source Files</Filter>
+    </MASM>
+    <MASM Include="source\init.asm">
       <Filter>Source Files</Filter>
     </MASM>
   </ItemGroup>
