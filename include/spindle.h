@@ -20,7 +20,7 @@
 /* -------- CONSTANTS ------------------------------------------------------ */
 
 /// Specifies the maximum number of tasks that may be created at a time.
-/// This is the highest allowed value of the `taskcount` parameter to spindleThreadsSpawn.
+/// This is the highest allowed value of the `taskCount` parameter to spindleThreadsSpawn.
 #define SPINDLE_MAX_TASK_COUNT                  16
 
 
