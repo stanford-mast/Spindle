@@ -17,6 +17,8 @@
 #include <stdint.h>
 
 
+// -------- FUNCTIONS ------------------------------------------------------ //
+
 /// Initializes the calling thread with its local ID, global ID, and thread group ID.
 /// Intended to be called internally before passing control to user-supplied code.
 /// @param [in] localThreadID Current thread's local ID.

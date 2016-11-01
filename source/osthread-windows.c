@@ -53,14 +53,14 @@ hwloc_thread_t spindleCreateOSThread(SSpindleThreadInfo* threadSpec)
     return CreateThread(NULL, 0, &spindleInternalThreadStartFuncWindows, (LPVOID)threadSpec, 0, NULL);
 }
 
-// ---------
+// --------
 
 hwloc_thread_t spindleIdentifyCurrentOSThread(void)
 {
     return (hwloc_thread_t)GetCurrentThread();
 }
 
-// ---------
+// --------
 
 uint32_t spindleJoinThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount)
 {

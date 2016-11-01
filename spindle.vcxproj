@@ -98,11 +98,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\spindle.h" />
+    <ClInclude Include="include\spindle\barrier.h" />
     <ClInclude Include="include\spindle\init.h" />
     <ClInclude Include="include\spindle\osthread.h" />
     <ClInclude Include="include\spindle\types.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\spindle\barrier.inc" />
     <None Include="include\spindle\helpers.inc" />
     <None Include="include\spindle\registers.inc" />
   </ItemGroup>
@@ -114,7 +116,7 @@
   <ItemGroup>
     <MASM Include="source\barrier.asm" />
     <MASM Include="source\init.asm" />
-    <MASM Include="source\threadinfo.asm" />
+    <MASM Include="source\spindle.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

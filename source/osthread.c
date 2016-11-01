@@ -28,7 +28,7 @@ void spindleAffinitizeCurrentOSThread(hwloc_topology_t topology, hwloc_obj_t aff
     hwloc_set_thread_cpubind(topology, spindleIdentifyCurrentOSThread(), affinityObject->cpuset, HWLOC_CPUBIND_THREAD | HWLOC_CPUBIND_STRICT);
 }
 
-// ---------
+// --------
 
 uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount)
 {

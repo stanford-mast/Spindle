@@ -12,6 +12,7 @@
  *****************************************************************************/
 
 #include "../spindle.h"
+#include "barrier.h"
 #include "osthread.h"
 #include "types.h"
 
@@ -312,6 +313,12 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             nextThreadAssignmentIndex += 1;
         }
     }
+    
+    // Initialize all thread barrier memory regions.
+    spindleInitializeGlobalThreadBarrier(totalNumThreads);
+
+    for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
+        spindleInitializeLocalThreadBarrier(taskIndex, taskNumThreads[taskIndex]);
     
     // Create the threads and wait for the result.
     threadResult = spindleCreateThreads(threadAssignments, totalNumThreads);

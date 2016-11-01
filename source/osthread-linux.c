@@ -55,14 +55,14 @@ hwloc_thread_t spindleCreateOSThread(SSpindleThreadInfo* threadSpec)
     return threadHandle;
 }
 
-// ---------
+// --------
 
 hwloc_thread_t spindleIdentifyCurrentOSThread(void)
 {
     return (hwloc_thread_t)pthread_self();
 }
 
-// ---------
+// --------
 
 uint32_t spindleJoinThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount)
 {
