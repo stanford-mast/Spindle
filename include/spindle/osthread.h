@@ -48,5 +48,6 @@ hwloc_thread_t spindleIdentifyCurrentOSThread(void);
 /// Joins the specified threads, returning only once they have all terminated or an error occurs.
 /// This is a platform-specific operation.
 /// @param [in] threadSpec Array of thread assignment specifications. Only the threadHandle member is used, and it must be filled for all elements.
+/// @param [in] threadCount Number of threads in the threadSpec array.
 /// @return 0 once all threads terminate successfully, or nonzero in the event of an error.
 uint32_t spindleJoinThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount);

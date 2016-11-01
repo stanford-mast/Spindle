@@ -25,6 +25,10 @@
 
 // -------- INTERNAL FUNCTIONS --------------------------------------------- //
 
+/// Internal thread start function for Windows.
+/// Affinitizes the thread to the required logical core, initializes thread information, and invokes the user-supplied function.
+/// @param [arg] Thread specificaion, cast as a typeless pointer.
+/// @return 0 upon completion of the user-supplied code.
 static DWORD WINAPI spindleInternalThreadStartFuncWindows(LPVOID arg)
 {
     SSpindleThreadInfo* threadSpec = (SSpindleThreadInfo*)arg;

@@ -24,6 +24,10 @@
 
 // -------- INTERNAL FUNCTIONS --------------------------------------------- //
 
+/// Internal thread start function for Linux.
+/// Affinitizes the thread to the required logical core, initializes thread information, and invokes the user-supplied function.
+/// @param [arg] Thread specificaion, cast as a typeless pointer.
+/// @return `NULL` upon completion of the user-supplied code.
 static void* spindleInternalThreadStartFuncLinux(void* arg)
 {
     SSpindleThreadInfo* threadSpec = (SSpindleThreadInfo*)arg;
