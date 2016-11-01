@@ -11,13 +11,12 @@
  *      Implementation of all thread-spawning logic.
  *****************************************************************************/
 
-#include "spindle.h"
+#include "../spindle.h"
 
 #include <hwloc.h>
 #include <malloc.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <string.h>
 
 
 // -------- TYPE DEFINITIONS ----------------------------------------------- //
@@ -325,30 +324,15 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         }
     }
     
+    // TESTING: print out thread assignment information.
+    printf("Created %u groups and %u total threads...\n", taskCount, totalNumThreads);
+    for (uint32_t threadIndex = 0; threadIndex < totalNumThreads; ++threadIndex)
+    {
+        printf(">> thread %u (%u,%u) is assigned to OS logical core %u\n", threadAssignments[threadIndex].globalThreadId, threadAssignments[threadIndex].threadGroupId, threadAssignments[threadIndex].localThreadId, threadAssignments[threadIndex].affinityObject->os_index);
+    }
+    
     // Destroy the hardware topology, free allocated memory, and return.
     hwloc_topology_destroy(topology);
     free((void*)threadAssignments);
     return 0;
-}
-
-
-void threadfunc(void* arg)
-{
-    
-}
-
-int main()
-{
-    SSpindleTaskSpec task[4];
-    
-    for (int i = 0; i < sizeof(task) / sizeof(task[0]); ++i)
-    {
-        task[i].arg = NULL;
-        task[i].func = threadfunc;
-        task[i].numaNode = 0;
-        task[i].numThreads = 3;
-        task[i].smtPolicy = SpindleSMTPolicyPreferLogical;
-    }
-    
-    return spindleThreadsSpawn(task, 2);
 }
