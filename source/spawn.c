@@ -16,7 +16,6 @@
 #include <hwloc.h>
 #include <malloc.h>
 #include <stdint.h>
-#include <stdio.h>
 
 
 // -------- TYPE DEFINITIONS ----------------------------------------------- //
@@ -322,13 +321,6 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
 
             nextThreadAssignmentIndex += 1;
         }
-    }
-    
-    // TESTING: print out thread assignment information.
-    printf("Created %u groups and %u total threads...\n", taskCount, totalNumThreads);
-    for (uint32_t threadIndex = 0; threadIndex < totalNumThreads; ++threadIndex)
-    {
-        printf(">> thread %u (%u,%u) is assigned to OS logical core %u\n", threadAssignments[threadIndex].globalThreadId, threadAssignments[threadIndex].threadGroupId, threadAssignments[threadIndex].localThreadId, threadAssignments[threadIndex].affinityObject->os_index);
     }
     
     // Destroy the hardware topology, free allocated memory, and return.
