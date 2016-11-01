@@ -36,7 +36,7 @@ uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCou
     {
         threadSpec[i].threadHandle = spindleCreateOSThread(&threadSpec[i]);
         
-        if (NULL == threadSpec[i].threadHandle)
+        if ((hwloc_thread_t)NULL == threadSpec[i].threadHandle)
             return __LINE__;
     }
     

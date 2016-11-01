@@ -43,9 +43,9 @@ CXX                         = g++
 AS                          = as
 AR							= ar
 
-CCFLAGS                     = -g -O3 -Wall -fPIC -std=c11 -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -D_GNU_SOURCE -DSPINDLE_LINUX
-CXXFLAGS                    = -g -O3 -Wall -fPIC -std=c++0x -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -DSPINDLE_LINUX
-ASFLAGS                     = -g --64 -mmnemonic=intel -msyntax=intel -mnaked-reg -I$(ASSEMBLY_INCLUDE_DIR) --defsym SPINDLE_LINUX=1
+CCFLAGS                     = -O3 -Wall -fPIC -std=c11 -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -D_GNU_SOURCE -DSPINDLE_LINUX
+CXXFLAGS                    = -O3 -Wall -fPIC -std=c++0x -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -DSPINDLE_LINUX
+ASFLAGS                     = --64 -mmnemonic=intel -msyntax=intel -mnaked-reg -I$(ASSEMBLY_INCLUDE_DIR) --defsym SPINDLE_LINUX=1
 ARFLAGS                     = 
 
 
@@ -54,8 +54,8 @@ ARFLAGS                     =
 OBJECT_FILE_SUFFIX          = .o
 DEP_FILE_SUFFIX             = .d
 
-C_SOURCE_FILES              = $(wildcard $(SOURCE_DIR)/*$(C_SOURCE_SUFFIX))
-CXX_SOURCE_FILES            = $(wildcard $(SOURCE_DIR)/*$(CXX_SOURCE_SUFFIX))
+C_SOURCE_FILES              = $(filter-out $(wildcard $(SOURCE_DIR)/*-*$(C_SOURCE_SUFFIX)), $(wildcard $(SOURCE_DIR)/*$(C_SOURCE_SUFFIX))) $(wildcard $(SOURCE_DIR)/*-$(PLATFORM_NAME)$(C_SOURCE_SUFFIX))
+CXX_SOURCE_FILES            = $(filter-out $(wildcard $(SOURCE_DIR)/*-*$(CXX_SOURCE_SUFFIX)), $(wildcard $(SOURCE_DIR)/*$(CXX_SOURCE_SUFFIX))) $(wildcard $(SOURCE_DIR)/*-$(PLATFORM_NAME)$(CXX_SOURCE_SUFFIX))
 ALL_SOURCE_FILES            = $(C_SOURCE_FILES) $(CXX_SOURCE_FILES)
 
 MASM_SOURCE_FILES           = $(wildcard $(SOURCE_DIR)/*$(MASM_SOURCE_SUFFIX))

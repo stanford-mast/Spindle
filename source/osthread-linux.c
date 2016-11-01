@@ -12,6 +12,8 @@
  *   This file contains Linux-specific functions.
  *****************************************************************************/
 
+#include "../spindle.h"
+#include "init.h"
 #include "osthread.h"
 #include "types.h"
 
@@ -50,7 +52,7 @@ hwloc_thread_t spindleCreateOSThread(SSpindleThreadInfo* threadSpec)
     pthread_t threadHandle;
     
     if (0 != pthread_create(&threadHandle, NULL, &spindleInternalThreadStartFuncLinux, (void*)threadSpec))
-        return NULL;
+        return (hwloc_thread_t)NULL;
     
     return threadHandle;
 }
