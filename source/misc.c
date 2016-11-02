@@ -30,3 +30,37 @@ uint32_t spindleGetSystemNUMANodeCount(void)
 
 	return hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
 }
+
+// --------
+
+uint32_t spindleGetNUMANodePhysicalCoreCount(uint32_t numaNodeIndex)
+{
+    hwloc_topology_t topology = spindleGetSystemTopologyObject();
+    hwloc_obj_t numaNodeObject = NULL;
+    
+    if (NULL == topology)
+        return 0;
+    
+    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, numaNodeIndex);
+    if (NULL == numaNodeObject)
+        return 0;
+    
+    return hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE);
+}
+
+// --------
+
+uint32_t spindleGetNUMANodeMaxThreadCount(uint32_t numaNodeIndex)
+{
+    hwloc_topology_t topology = spindleGetSystemTopologyObject();
+    hwloc_obj_t numaNodeObject = NULL;
+    
+    if (NULL == topology)
+        return 0;
+    
+    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, numaNodeIndex);
+    if (NULL == numaNodeObject)
+        return 0;
+    
+    return hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_PU);
+}

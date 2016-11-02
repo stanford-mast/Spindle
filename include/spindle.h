@@ -130,6 +130,16 @@ uint64_t spindleTimedBarrierGlobal(void);
 /// @return Number of NUMA nodes in the system, or 0 in the event of an error.
 uint32_t spindleGetSystemNUMANodeCount(void);
 
+/// Retrieves the number of physical cores on the specified NUMA node.
+/// This is equivalent to the number of available threads when the SMT policy is specified as SpindleSMTPolicyDisableSMT.
+/// @return Number of physical cores on the specified NUMA node, or 0 in the event of an error.
+uint32_t spindleGetNUMANodePhysicalCoreCount(uint32_t numaNodeIndex);
+
+/// Retrieves the number of threads (logical cores) available on the specified NUMA node.
+/// This is equivalent to the number of available threads when the SMT policy is not specified as SpindleSMTPolicyDisableSMT.
+/// @return Number of threads available on the specified NUMA node, or 0 in the event of an error.
+uint32_t spindleGetNUMANodeMaxThreadCount(uint32_t numaNodeIndex);
+
 #ifdef __cplusplus
 }
 #endif
