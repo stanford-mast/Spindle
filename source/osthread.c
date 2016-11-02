@@ -17,7 +17,6 @@
 
 #include <hwloc.h>
 #include <stdint.h>
-#include <stdio.h>
 
 
 // -------- FUNCTIONS ------------------------------------------------------ //

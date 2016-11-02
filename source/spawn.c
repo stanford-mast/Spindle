@@ -14,6 +14,7 @@
 #include "../spindle.h"
 #include "barrier.h"
 #include "osthread.h"
+#include "topology.h"
 #include "types.h"
 
 #include <hwloc.h>
@@ -127,54 +128,40 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     // It is trivially a success case if the number of tasks is zero.
     if (0 == taskCount)
         return 0;
-
+    
     // It is trivially a failure case if the number of tasks is too high.
     if (SPINDLE_MAX_TASK_COUNT < taskCount)
         return __LINE__;
     
-    // Create and load the hardware topology of the current system.
-    if (0 != hwloc_topology_init(&topology))
+    // Obtain the hardware topology object for the current system.
+    topology = spindleGetSystemTopologyObject();
+    if (NULL == topology)
         return __LINE__;
     
-    if (0 != hwloc_topology_load(topology))
-        return __LINE__;
-
     // Figure out the highest possible NUMA node index, for error-checking purposes.
     numNumaNodes = hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
     if (1 > numNumaNodes)
-    {
-        hwloc_topology_destroy(topology);
         return __LINE__;
-    }
-
+    
     // Initialize data structures to assign from the first NUMA node in the system.
     numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, currentNumaNode);
     if (NULL == numaNodeObject)
-    {
-        hwloc_topology_destroy(topology);
         return __LINE__;
-    }
-
+    
     threadsLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_PU);
     coresLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE);
-
+    
     physicalCoreObject = hwloc_get_obj_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE, 0);
     if (NULL == physicalCoreObject)
-    {
-        hwloc_topology_destroy(topology);
         return __LINE__;
-    }
-
+    
     // Assign ranges of physical cores to tasks, based on the task specifications.
     for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
     {
         // Verify the task specification's NUMA node.
         if (taskSpec[taskIndex].numaNode < currentNumaNode || taskSpec[taskIndex].numaNode >= numNumaNodes)
-        {
-            hwloc_topology_destroy(topology);
             return __LINE__;
-        }
-
+        
         // Reinitialize to a different NUMA node if the specified NUMA node is different.
         if (taskSpec[taskIndex].numaNode != currentNumaNode)
         {
@@ -182,20 +169,14 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             
             numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, currentNumaNode);
             if (NULL == numaNodeObject)
-            {
-                hwloc_topology_destroy(topology);
                 return __LINE__;
-            }
-
+            
             threadsLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_PU);
             coresLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE);
-
+            
             physicalCoreObject = hwloc_get_obj_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE, 0);
             if (NULL == physicalCoreObject)
-            {
-                hwloc_topology_destroy(topology);
                 return __LINE__;
-            }
         }
 
         // Find the ending physical core for the current task, based on the number of threads specified.
@@ -203,11 +184,8 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         {
             // Verify that at least one core remains available on the current NUMA node.
             if (1 > coresLeftOnCurrentNumaNode)
-            {
-                hwloc_topology_destroy(topology);
                 return __LINE__;
-            }
-
+            
             // Assign the starting physical core for the current task.
             taskStartPhysCore[taskIndex] = physicalCoreObject->logical_index;
             
@@ -240,11 +218,8 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             
             // Verify a sufficient number of cores and threads left on the current NUMA node.
             if (threadsLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads || (SpindleSMTPolicyDisableSMT == taskSpec[taskIndex].smtPolicy && coresLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads))
-            {
-                hwloc_topology_destroy(topology);
                 return __LINE__;
-            }
-
+            
             // Assign the starting physical core for the current task.
             taskStartPhysCore[taskIndex] = physicalCoreObject->logical_index;
 
@@ -259,10 +234,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
 
                 // Check for errors: there needs to be a valid physical core object at this point.
                 if (NULL == physicalCoreObject)
-                {
-                    hwloc_topology_destroy(topology);
                     return __LINE__;
-                }
                 
                 // Update the end physical core assignment.
                 taskEndPhysCore[taskIndex] = physicalCoreObject->logical_index;
@@ -289,11 +261,8 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     // Allocate memory for thread assignments.
     threadAssignments = (SSpindleThreadInfo*)malloc(sizeof(SSpindleThreadInfo) * totalNumThreads);
     if (NULL == threadAssignments)
-    {
-        hwloc_topology_destroy(topology);
         return __LINE__;
-    }
-
+    
     // Create thread information for each task.
     for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
     {
@@ -323,8 +292,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     // Create the threads and wait for the result.
     threadResult = spindleCreateThreads(threadAssignments, totalNumThreads);
     
-    // Destroy the hardware topology, free allocated memory, and return.
-    hwloc_topology_destroy(topology);
+    // Free allocated memory and return.
     free((void*)threadAssignments);
     return threadResult;
 }

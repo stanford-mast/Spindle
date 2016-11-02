@@ -30,6 +30,9 @@
     <ClInclude Include="include\spindle\barrier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\spindle\topology.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\spindle\helpers.inc">
@@ -50,6 +53,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\osthread-windows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\topology.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\misc.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

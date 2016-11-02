@@ -61,7 +61,7 @@ extern "C" {
 #endif
 
 /// Spawns threads according to the provided task specification.
-/// NUMA node indices must appear monotonically in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
+/// NUMA node indices must appear in monotonically increasing order in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
 /// @param [in] taskSpec Task specifications, as an array.
 /// @param [in] taskCount Number of tasks specified.
 /// @return 0 once all spawned threads have terminated, or nonzero in the event of an error.
@@ -124,6 +124,11 @@ uint64_t spindleTimedBarrierLocal(void);
 /// Useful for synchronization, but this version measures the time a thread spends waiting.
 /// @return Number of cycles the calling thread spent waiting, captured using the `rdtsc` instruction.
 uint64_t spindleTimedBarrierGlobal(void);
+
+/// Retrieves the number of NUMA nodes in the system.
+/// NUMA nodes are identified by a zero-based index up to 1 less than the number returned by this function.
+/// @return Number of NUMA nodes in the system, or 0 in the event of an error.
+uint32_t spindleGetSystemNUMANodeCount(void);
 
 #ifdef __cplusplus
 }

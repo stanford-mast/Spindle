@@ -46,9 +46,6 @@ On Linux, type `make docs` to compile the documentation. On Windows, run the Dox
 Projects that make use of libspindle should include the top-level spindle.h header file and nothing else.
 Documentation covers both spindle.h and the internal implementation of libspindle, the latter being of interest only to those who wish to modify the implementation of libspindle.
 
-Linking with the libspindle static library will also require linking with hwloc and its dependencies.
-On Windows it is recommended to compile the `libhwloc` project as a static library; it would then be sufficient to add both `spindle.lib` and `libhwloc-5.lib` as additional library dependencies to any Visual Studio project that uses libspindle.
-
 At a low level, libspindle globally reserves and assumes exclusive use of the `ymm15` AVX register. It uses this register to hold thread information.
 Code that executes in regions parallelized by libspindle must not modify the contents of this register, even inadvertently by means of the `vzeroupper` instruction.
 On Linux, projects that use libspindle and make use of vector instructions (SSE, AVX, and so on) should be compiled with the GCC option `-mno-vzeroupper`.
