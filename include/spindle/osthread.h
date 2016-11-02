@@ -23,8 +23,8 @@
 // -------- FUNCTIONS ------------------------------------------------------ //
 
 /// Affinitizes the calling OS thread to the specified hwloc affinity object within the specified hwloc topology.
-/// @param [in] topology hwloc system topology.
-/// @param [in] affinityObject hwloc object within the topology object that represents the PU to which to affinitize.
+/// @param [in] topology `hwloc` system topology.
+/// @param [in] affinityObject `hwloc` object within the topology object that represents the PU to which to affinitize.
 void spindleAffinitizeCurrentOSThread(hwloc_topology_t topology, hwloc_obj_t affinityObject);
 
 /// Creates a single OS thread per the thread specification.

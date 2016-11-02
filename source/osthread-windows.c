@@ -37,7 +37,7 @@ static DWORD WINAPI spindleInternalThreadStartFuncWindows(LPVOID arg)
     spindleAffinitizeCurrentOSThread(threadSpec->topology, threadSpec->affinityObject);
 
     // Initialize thread identification information.
-    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->threadGroupID);
+    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->taskID);
     spindleSetThreadCounts(threadSpec->localThreadCount, threadSpec->globalThreadCount, threadSpec->groupCount);
     spindleInitializeLocalVariable();
 

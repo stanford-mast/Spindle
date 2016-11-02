@@ -8,7 +8,7 @@
  * Copyright (c) 2016
  *************************************************************************//**
  * @file topology.h
- *   Implementation of functions for interacting with the hwloc topology.
+ *   Implementation of functions for interacting with the `hwloc` topology.
  *****************************************************************************/
 
 #include <hwloc.h>
@@ -17,7 +17,7 @@
 
 // -------- LOCALS --------------------------------------------------------- //
 
-/// Holds the hwloc system topology object.
+/// Holds the `hwloc` system topology object.
 /// Exposes it as a global variable that can be lazily initialized and freed whenever required.
 static hwloc_topology_t spindleSystemTopology = NULL;
 

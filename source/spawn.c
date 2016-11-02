@@ -24,15 +24,15 @@
 
 // -------- HELPERS -------------------------------------------------------- //
 
-/// Retrieves the hwloc processing unit object to which the specified thread should be affinitized.
-/// Parameters specify the hwloc system topology, the task definition, and the SMT policy, all of which are used to identify the processing unit.
+/// Retrieves the `hwloc` processing unit object to which the specified thread should be affinitized.
+/// Parameters specify the `hwloc` system topology, the task definition, and the SMT policy, all of which are used to identify the processing unit.
 /// Performs minimal, if any, error-checking and assumes a correct assignment of physical cores to tasks.
-/// @param [in] topology System topology object, from hwloc.
+/// @param [in] topology System topology object, from `hwloc`.
 /// @param [in] startPhysCore Starting physical core, part of the task specification.
 /// @param [in] endPhysCore Ending physical core, part of the task specification.
 /// @param [in] threadIndex Zero-based index of the thread within the task (in other words, the thread's local ID).
 /// @param [in] smtPolicy SMT policy, part of the task specification.
-/// @return Object representing the hwloc processing unit to which the specified thread should be affinitized.
+/// @return Object representing the `hwloc` processing unit to which the specified thread should be affinitized.
 static hwloc_obj_t spindleHelperGetThreadAffinityObject(hwloc_topology_t topology, uint32_t startPhysCore, uint32_t endPhysCore, uint32_t threadIndex, ESpindleSMTPolicy smtPolicy)
 {
     const uint32_t numPhysCoresAvailable = endPhysCore - startPhysCore + 1;
@@ -274,7 +274,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             threadAssignments[nextThreadAssignmentIndex].affinityObject = spindleHelperGetThreadAffinityObject(topology, taskStartPhysCore[taskIndex], taskEndPhysCore[taskIndex], threadIndex, taskSpec[taskIndex].smtPolicy);
             threadAssignments[nextThreadAssignmentIndex].localThreadID = threadIndex;
             threadAssignments[nextThreadAssignmentIndex].globalThreadID = nextThreadAssignmentIndex;
-            threadAssignments[nextThreadAssignmentIndex].threadGroupID = taskIndex;
+            threadAssignments[nextThreadAssignmentIndex].taskID = taskIndex;
             threadAssignments[nextThreadAssignmentIndex].localThreadCount = taskNumThreads[taskIndex];
             threadAssignments[nextThreadAssignmentIndex].globalThreadCount = totalNumThreads;
             threadAssignments[nextThreadAssignmentIndex].groupCount = taskCount;

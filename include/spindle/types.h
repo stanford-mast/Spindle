@@ -34,12 +34,12 @@ typedef struct SSpindleThreadInfo
     hwloc_topology_t topology;                                              ///< System topology object from `hwloc`.
     hwloc_obj_t affinityObject;                                             ///< Object from `hwloc` that identifies the PU to which the present thread should be affinitized.
 
-    uint32_t localThreadID;                                                 ///< Local thread ID. Can be obtained by calling spindleGetLocalThreadId.
-    uint32_t globalThreadID;                                                ///< Global thread ID. Can be obtained by calling spindleGetGlobalThreadId.
-    uint32_t threadGroupID;                                                 ///< Thread group ID. Can be obtained by calling spindleGetThreadGroupId.
-    uint32_t localThreadCount;                                              ///< Number of threads in the current thread's group. Can be obtained by calling spindleGetLocalThreadCount.
-    uint32_t globalThreadCount;                                             ///< Total number of threads spawned. Can be obtained by calling spindleGetGlobalThreadCount.
-    uint32_t groupCount;                                                    ///< Number of thread groups created. Can be obtained by calling spindleGetGroupCount.
+    uint32_t localThreadID;                                                 ///< Local thread ID.
+    uint32_t globalThreadID;                                                ///< Global thread ID.
+	uint32_t taskID;                                                        ///< Task ID.
+    uint32_t localThreadCount;                                              ///< Number of threads in the current task.
+    uint32_t globalThreadCount;                                             ///< Total number of threads spawned.
+    uint32_t groupCount;                                                    ///< Number of thread groups created.
 
     hwloc_thread_t threadHandle;                                            ///< Thread handle, used to identify and wait for threads once they are created.
 } SSpindleThreadInfo;
