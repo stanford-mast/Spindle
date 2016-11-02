@@ -22,18 +22,18 @@ _TEXT                                       SEGMENT
 ; See "init.h" for documentation.
 
 spindleSetThreadID                          PROC PUBLIC
-    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param1,               0           ; local thread ID
-    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param2,               1           ; global thread ID
-    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param3,               2           ; thread group number
+    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param1,               0           ; Local thread ID
+    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param2,               1           ; Global thread ID
+    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param3,               2           ; Task ID
     ret
 spindleSetThreadID                          ENDP
 
 ; ---------
 
 spindleSetThreadCounts                      PROC PUBLIC
-    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param1,               3           ; number of threads in the current group
-    vpinsrd                 xmm0,                   xmm0,                   e_param2,               0           ; number of threads globally
-    vpinsrd                 xmm0,                   xmm0,                   e_param3,               1           ; number of groups globally
+    vpinsrd                 xmm_threadinfo,         xmm_threadinfo,         e_param1,               3           ; Number of threads in the current task
+    vpinsrd                 xmm0,                   xmm0,                   e_param2,               0           ; Number of threads globally
+    vpinsrd                 xmm0,                   xmm0,                   e_param3,               1           ; Number of tasks globally
     vinsertf128             ymm_threadinfo,         ymm_threadinfo,         xmm0,                   1
     ret
 spindleSetThreadCounts                      ENDP

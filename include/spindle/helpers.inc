@@ -21,21 +21,21 @@ INCLUDE registers.inc
 ; --------- MACROS ------------------------------------------------------------
 
 ; Retrieves the local thread ID and places it in the specified 32-bit register.
-spindleAsmHelperGetLocalThreadId            MACRO edest
+spindleAsmHelperGetLocalThreadID            MACRO edest
     vpextrd                 edest,                  xmm_threadinfo,         0
 ENDM
 
 ; Retrieves the global thread ID and places it in the specified 32-bit register.
-spindleAsmHelperGetGlobalThreadId           MACRO edest
+spindleAsmHelperGetGlobalThreadID           MACRO edest
     vpextrd                 edest,                  xmm_threadinfo,         1
 ENDM
 
-; Retrieves the thread group ID and places it in the specified 32-bit register.
-spindleAsmHelperGetThreadGroupId            MACRO edest
+; Retrieves the task ID and places it in the specified 32-bit register.
+spindleAsmHelperGetTaskID                   MACRO edest
     vpextrd                 edest,                  xmm_threadinfo,         2
 ENDM
 
-; Retrieves the number of threads in the current thread's group and places it in the specified 32-bit register.
+; Retrieves the number of threads in the current thread's task and places it in the specified 32-bit register.
 spindleAsmHelperGetLocalThreadCount         MACRO edest
     vpextrd                 edest,                  xmm_threadinfo,         3
 ENDM
@@ -46,8 +46,8 @@ spindleAsmHelperGetGlobalThreadCount        MACRO edest
     vpextrd                 edest,                  xmm0,                   0
 ENDM
 
-; Retrieves the total number of thread groups and places it in the specified 32-bit register.
-spindleAsmHelperGetGroupCount               MACRO edest
+; Retrieves the total number of tasks and places it in the specified 32-bit register.
+spindleAsmHelperGetTaskCount                MACRO edest
     vextractf128            xmm0,                   ymm_threadinfo,         1
     vpextrd                 edest,                  xmm0,                   1
 ENDM

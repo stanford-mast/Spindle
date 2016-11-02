@@ -2,9 +2,9 @@ libspindle
 ==========
 
 libspindle is a multi-platform topology-aware thread control library for x86-based systems containing one or more NUMA nodes.
-It features a simple API for dispatching tasks to multiple threads, organizing tasks into groups, and affinitizing tasks to logical cores.
+It features a simple API for dispatching tasks to multiple threads and affinitizing threads to logical cores.
 
-Synchronization between threads is provided by means of thread barriers, both locally (within a task group) and globally (across all spawned threads).
+Synchronization between threads is provided by means of thread barriers, both locally (within a task) and globally (across all spawned threads).
 The barrier implementation is designed to be high performance, leveraging the hardware cache coherency protocol to reduce overhead and virtually eliminate cache line thrashing.
 A thread waiting at a barrier spins on a shared cache line that is not written until the last thread passes the barrier.
 This write-once behavior keeps the shared cache line in `S` state in the caches of all cores while they are waiting at the barrier.

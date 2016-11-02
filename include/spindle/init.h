@@ -23,15 +23,15 @@
 /// Intended to be called internally before passing control to user-supplied code.
 /// @param [in] localThreadID Current thread's local ID.
 /// @param [in] globalThreadID Current thread's global ID.
-/// @param [in] threadGroupID Current thread's group ID.
-void spindleSetThreadID(uint32_t localThreadID, uint32_t globalThreadID, uint32_t threadGroupID);
+/// @param [in] taskID Current thread's task ID.
+void spindleSetThreadID(uint32_t localThreadID, uint32_t globalThreadID, uint32_t taskID);
 
 /// Initializes the calling thread with information about the number of other threads.
 /// Intended to be called internally before passing control to user-supplied code.
 /// @param [in] localThreadCount Number of threads in the current thread's group.
 /// @param [in] globalThreadCount Number of threads globally.
-/// @param [in] threadGroupCount Number of thread groups globally.
-void spindleSetThreadCounts(uint32_t localThreadCount, uint32_t globalThreadCount, uint32_t threadGroupCount);
+/// @param [in] taskCount Number of tasks globally.
+void spindleSetThreadCounts(uint32_t localThreadCount, uint32_t globalThreadCount, uint32_t taskCount);
 
 /// Initializes the calling thread's per-thread local variable to 0.
 /// Intended to be called internally before passing control to user-supplied code.

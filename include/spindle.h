@@ -67,7 +67,7 @@ extern "C" {
 /// @return 0 once all spawned threads have terminated, or nonzero in the event of an error.
 uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount);
 
-/// Retrieves the current thread's local ID within its group.
+/// Retrieves the current thread's local ID within its task.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
 /// @return Current thread's local ID.
 uint32_t spindleGetLocalThreadID(void);
@@ -77,14 +77,14 @@ uint32_t spindleGetLocalThreadID(void);
 /// @return Current thread's global ID.
 uint32_t spindleGetGlobalThreadID(void);
 
-/// Retrieves the current thread's logical group number.
+/// Retrieves the current thread's logical task number.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
-/// @return Current thread's group ID.
-uint32_t spindleGetThreadGroupID(void);
+/// @return Current thread's task ID.
+uint32_t spindleGetTaskID(void);
 
-/// Retrieves the number of threads in the current thread's logical group.
+/// Retrieves the number of threads in the current thread's logical task.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
-/// @return Number of threads in the current thread's group.
+/// @return Number of threads in the current thread's task.
 uint32_t spindleGetLocalThreadCount(void);
 
 /// Retrieves the total number of threads spawned globally.
@@ -92,10 +92,10 @@ uint32_t spindleGetLocalThreadCount(void);
 /// @return Total number of threads spawned globally.
 uint32_t spindleGetGlobalThreadCount(void);
 
-/// Retrieves the total number of logical thread groups.
+/// Retrieves the total number of tasks.
 /// Undefined return value if called outside the context of a code region parallelized by this library.
-/// @return Total number of thread groups.
-uint32_t spindleGetGroupCount(void);
+/// @return Total number of tasks.
+uint32_t spindleGetTaskCount(void);
 
 /// Sets the value of the current thread's 64-bit per-thread variable.
 /// This variable can be used for any purpose and is valid only within the context of a code region parallelized by this library.
@@ -107,7 +107,7 @@ void spindleSetLocalVariable(uint64_t value);
 /// @return Value of the current thread's per-thread variable.
 uint64_t spindleGetLocalVariable(void);
 
-/// Provides a barrier that no thread can pass until all threads in the current group have reached this point in the execution.
+/// Provides a barrier that no thread can pass until all threads in the current task have reached this point in the execution.
 /// Useful for synchronization.
 void spindleBarrierLocal(void);
 
@@ -115,7 +115,7 @@ void spindleBarrierLocal(void);
 /// Useful for synchronization.
 void spindleBarrierGlobal(void);
 
-/// Provides a barrier that no thread can pass until all threads in the current group have reached this point in the execution.
+/// Provides a barrier that no thread can pass until all threads in the current task have reached this point in the execution.
 /// Useful for synchronization, but this version measures the time a thread spends waiting.
 /// @return Number of cycles the calling thread spent waiting, captured using the `rdtsc` instruction.
 uint64_t spindleTimedBarrierLocal(void);

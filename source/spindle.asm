@@ -36,10 +36,10 @@ spindleGetGlobalThreadID                    ENDP
 
 ; ---------
 
-spindleGetThreadGroupID                     PROC PUBLIC
-    spindleAsmHelperGetThreadGroupID                e_retval
+spindleGetTaskID                            PROC PUBLIC
+    spindleAsmHelperGetTaskID                       e_retval
     ret
-spindleGetThreadGroupID                     ENDP
+spindleGetTaskID                            ENDP
 
 ; ---------
 
@@ -57,10 +57,10 @@ spindleGetGlobalThreadCount                 ENDP
 
 ; ---------
 
-spindleGetGroupCount                        PROC PUBLIC
-    spindleAsmHelperGetGroupCount                   e_retval
+spindleGetTaskCount                         PROC PUBLIC
+    spindleAsmHelperGetTaskCount                    e_retval
     ret
-spindleGetGroupCount                        ENDP
+spindleGetTaskCount                         ENDP
 
 ; ---------
 
