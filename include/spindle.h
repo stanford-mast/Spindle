@@ -17,13 +17,6 @@
 #include <stdint.h>
 
 
-/* -------- CONSTANTS ------------------------------------------------------ */
-
-/// Specifies the maximum number of tasks that may be created at a time.
-/// This is the highest allowed value of the `taskCount` parameter to spindleThreadsSpawn.
-#define SPINDLE_MAX_TASK_COUNT                  16
-
-
 /* -------- TYPE DEFINITIONS ----------------------------------------------- */
 
 /// Signature of the starting function of each thread.

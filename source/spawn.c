@@ -115,9 +115,9 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     hwloc_obj_t numaNodeObject = NULL;
     hwloc_obj_t physicalCoreObject = NULL;
 
-    uint32_t taskStartPhysCore[SPINDLE_MAX_TASK_COUNT];
-    uint32_t taskEndPhysCore[SPINDLE_MAX_TASK_COUNT];
-    uint32_t taskNumThreads[SPINDLE_MAX_TASK_COUNT];
+    uint32_t* taskStartPhysCore;
+    uint32_t* taskEndPhysCore;
+    uint32_t* taskNumThreads;
     
     uint32_t currentNumaNode = 0;
     uint32_t threadsLeftOnCurrentNumaNode = 0;
@@ -128,10 +128,6 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     // It is trivially a success case if the number of tasks is zero.
     if (0 == taskCount)
         return 0;
-    
-    // It is trivially a failure case if the number of tasks is too high.
-    if (SPINDLE_MAX_TASK_COUNT < taskCount)
-        return __LINE__;
     
     // Obtain the hardware topology object for the current system.
     topology = spindleGetSystemTopologyObject();
@@ -155,12 +151,37 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     if (NULL == physicalCoreObject)
         return __LINE__;
     
-    // Assign ranges of physical cores to tasks, based on the task specifications.
+	// Allocate memory for assignment arrays.
+	taskStartPhysCore = (uint32_t*)malloc(sizeof(uint32_t) * taskCount);
+	if (NULL == taskStartPhysCore)
+		return __LINE__;
+
+	taskEndPhysCore = (uint32_t*)malloc(sizeof(uint32_t) * taskCount);
+	if (NULL == taskEndPhysCore)
+	{
+		free((void*)taskStartPhysCore);
+		return __LINE__;
+	}
+
+	taskNumThreads = (uint32_t*)malloc(sizeof(uint32_t) * taskCount);
+	if (NULL == taskNumThreads)
+	{
+		free((void*)taskStartPhysCore);
+		free((void*)taskEndPhysCore);
+		return __LINE__;
+	}
+	
+	// Assign ranges of physical cores to tasks, based on the task specifications.
     for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
     {
         // Verify the task specification's NUMA node.
         if (taskSpec[taskIndex].numaNode < currentNumaNode || taskSpec[taskIndex].numaNode >= numNumaNodes)
-            return __LINE__;
+		{
+			free((void*)taskStartPhysCore);
+			free((void*)taskEndPhysCore);
+			free((void*)taskNumThreads);
+			return __LINE__;
+		}
         
         // Reinitialize to a different NUMA node if the specified NUMA node is different.
         if (taskSpec[taskIndex].numaNode != currentNumaNode)
@@ -169,22 +190,37 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             
             numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, currentNumaNode);
             if (NULL == numaNodeObject)
-                return __LINE__;
+			{
+				free((void*)taskStartPhysCore);
+				free((void*)taskEndPhysCore);
+				free((void*)taskNumThreads);
+				return __LINE__;
+			}
             
             threadsLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_PU);
             coresLeftOnCurrentNumaNode = hwloc_get_nbobjs_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE);
             
             physicalCoreObject = hwloc_get_obj_inside_cpuset_by_type(topology, numaNodeObject->cpuset, HWLOC_OBJ_CORE, 0);
             if (NULL == physicalCoreObject)
-                return __LINE__;
+			{
+				free((void*)taskStartPhysCore);
+				free((void*)taskEndPhysCore);
+				free((void*)taskNumThreads);
+				return __LINE__;
+			}
         }
-
-        // Find the ending physical core for the current task, based on the number of threads specified.
+		
+		// Find the ending physical core for the current task, based on the number of threads specified.
         if (0 == taskSpec[taskIndex].numThreads)
         {
             // Verify that at least one core remains available on the current NUMA node.
             if (1 > coresLeftOnCurrentNumaNode)
-                return __LINE__;
+			{
+				free((void*)taskStartPhysCore);
+				free((void*)taskEndPhysCore);
+				free((void*)taskNumThreads);
+				return __LINE__;
+			}
             
             // Assign the starting physical core for the current task.
             taskStartPhysCore[taskIndex] = physicalCoreObject->logical_index;
@@ -218,7 +254,12 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             
             // Verify a sufficient number of cores and threads left on the current NUMA node.
             if (threadsLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads || (SpindleSMTPolicyDisableSMT == taskSpec[taskIndex].smtPolicy && coresLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads))
-                return __LINE__;
+			{
+				free((void*)taskStartPhysCore);
+				free((void*)taskEndPhysCore);
+				free((void*)taskNumThreads);
+				return __LINE__;
+			}
             
             // Assign the starting physical core for the current task.
             taskStartPhysCore[taskIndex] = physicalCoreObject->logical_index;
@@ -234,7 +275,12 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
 
                 // Check for errors: there needs to be a valid physical core object at this point.
                 if (NULL == physicalCoreObject)
-                    return __LINE__;
+				{
+					free((void*)taskStartPhysCore);
+					free((void*)taskEndPhysCore);
+					free((void*)taskNumThreads);
+					return __LINE__;
+				}
                 
                 // Update the end physical core assignment.
                 taskEndPhysCore[taskIndex] = physicalCoreObject->logical_index;
@@ -261,7 +307,12 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     // Allocate memory for thread assignments.
     threadAssignments = (SSpindleThreadInfo*)malloc(sizeof(SSpindleThreadInfo) * totalNumThreads);
     if (NULL == threadAssignments)
-        return __LINE__;
+	{
+		free((void*)taskStartPhysCore);
+		free((void*)taskEndPhysCore);
+		free((void*)taskNumThreads);
+		return __LINE__;
+	}
     
     // Create thread information for each task.
     for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
@@ -283,16 +334,21 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         }
     }
     
-    // Initialize all thread barrier memory regions.
+	// Free buffers no longer needed.
+	free((void*)taskStartPhysCore);
+	free((void*)taskEndPhysCore);
+	free((void*)taskNumThreads);
+	
+	// Initialize all thread barrier memory regions.
     spindleInitializeGlobalThreadBarrier(totalNumThreads);
 
     for (uint32_t taskIndex = 0; taskIndex < taskCount; ++taskIndex)
         spindleInitializeLocalThreadBarrier(taskIndex, taskNumThreads[taskIndex]);
-    
-    // Create the threads and wait for the result.
+	
+	// Create the threads and wait for the result.
     threadResult = spindleCreateThreads(threadAssignments, totalNumThreads);
     
     // Free allocated memory and return.
-    free((void*)threadAssignments);
+	free((void*)threadAssignments);
     return threadResult;
 }
