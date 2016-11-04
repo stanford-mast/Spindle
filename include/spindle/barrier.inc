@@ -19,12 +19,13 @@ INCLUDE registers.inc
 
 
 ; --------- GLOBALS -----------------------------------------------------------
+; See "barrier.h" for documentation.
 
-; Storage area for the counter of threads that have reached the global barrier, plus cache-line padding.
 EXTRN spindleGlobalBarrierCounter:QWORD
 
-; Storage area for the global barrier flag, on which threads spin while waiting for the global barrier, plus cache-line padding.
 EXTRN spindleGlobalBarrierFlag:QWORD
+
+EXTRN spindleLocalBarrierBase:QWORD
 
 
 ENDIF ; __SPINDLE_BARRIER_INC

@@ -15,14 +15,22 @@ INCLUDE helpers.inc
 INCLUDE registers.inc
 
 
-DATA                                        SEGMENT ALIGN(64)
+DATA                                        SEGMENT ALIGN(128)
 
 
 ; --------- GLOBALS -----------------------------------------------------------
-; See "barrier.inc" for documentation.
+; See "barrier.h" for documentation.
 
 PUBLIC spindleGlobalBarrierCounter
 spindleGlobalBarrierCounter                 DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
                                             DQ          0000000000000000h
                                             DQ          0000000000000000h
                                             DQ          0000000000000000h
@@ -40,6 +48,17 @@ spindleGlobalBarrierFlag                    DQ          0000000000000000h
                                             DQ          0000000000000000h
                                             DQ          0000000000000000h
                                             DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+                                            DQ          0000000000000000h
+
+PUBLIC spindleLocalBarrierBase
+spindleLocalBarrierBase                     DQ          0000000000000000h
 
 
 DATA                                        ENDS

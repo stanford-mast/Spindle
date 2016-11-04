@@ -110,6 +110,7 @@
     <None Include="include\spindle\registers.inc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\barrier.c" />
     <ClCompile Include="source\misc.c" />
     <ClCompile Include="source\osthread-windows.c" />
     <ClCompile Include="source\osthread.c" />
