@@ -39,7 +39,7 @@ typedef struct SSpindleThreadInfo
     uint32_t taskID;                                                        ///< Task ID.
     uint32_t localThreadCount;                                              ///< Number of threads in the current task.
     uint32_t globalThreadCount;                                             ///< Total number of threads spawned.
-    uint32_t groupCount;                                                    ///< Number of thread groups created.
+    uint32_t taskCount;                                                     ///< Number of thread groups created.
 
     hwloc_thread_t threadHandle;                                            ///< Thread handle, used to identify and wait for threads once they are created.
 } SSpindleThreadInfo;

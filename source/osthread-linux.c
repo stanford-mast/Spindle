@@ -36,8 +36,8 @@ static void* spindleInternalThreadStartFuncLinux(void* arg)
     spindleAffinitizeCurrentOSThread(threadSpec->topology, threadSpec->affinityObject);
 
     // Initialize thread identification information.
-    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->threadGroupID);
-    spindleSetThreadCounts(threadSpec->localThreadCount, threadSpec->globalThreadCount, threadSpec->groupCount);
+    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->taskID);
+    spindleSetThreadCounts(threadSpec->localThreadCount, threadSpec->globalThreadCount, threadSpec->taskCount);
     spindleInitializeLocalVariable();
 
     // Wait for all threads, then call the real thread starting function.

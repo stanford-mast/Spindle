@@ -328,7 +328,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
             threadAssignments[nextThreadAssignmentIndex].taskID = taskIndex;
             threadAssignments[nextThreadAssignmentIndex].localThreadCount = taskNumThreads[taskIndex];
             threadAssignments[nextThreadAssignmentIndex].globalThreadCount = totalNumThreads;
-            threadAssignments[nextThreadAssignmentIndex].groupCount = taskCount;
+            threadAssignments[nextThreadAssignmentIndex].taskCount = taskCount;
 
             nextThreadAssignmentIndex += 1;
         }
