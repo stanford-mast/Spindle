@@ -36,7 +36,7 @@ typedef struct SSpindleThreadInfo
 
     uint32_t localThreadID;                                                 ///< Local thread ID.
     uint32_t globalThreadID;                                                ///< Global thread ID.
-	uint32_t taskID;                                                        ///< Task ID.
+    uint32_t taskID;                                                        ///< Task ID.
     uint32_t localThreadCount;                                              ///< Number of threads in the current task.
     uint32_t globalThreadCount;                                             ///< Total number of threads spawned.
     uint32_t groupCount;                                                    ///< Number of thread groups created.

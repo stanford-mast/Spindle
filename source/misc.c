@@ -23,12 +23,12 @@
 
 uint32_t spindleGetSystemNUMANodeCount(void)
 {
-	hwloc_topology_t topology = spindleGetSystemTopologyObject();
+    hwloc_topology_t topology = spindleGetSystemTopologyObject();
 
-	if (NULL == topology)
-		return 0;
+    if (NULL == topology)
+        return 0;
 
-	return hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
+    return hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
 }
 
 // --------

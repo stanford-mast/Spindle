@@ -79,6 +79,33 @@ spindleGetLocalVariable                     ENDP
 ; ---------
 
 spindleBarrierLocal                         PROC PUBLIC
+    ; Calculate the memory address within the local barrier memory region for the current thread's barrier counter and flag.
+    ; This is based on the thread's task ID.
+    spindleAsmHelperGetTaskID                       r8d
+    shl                     r8,                     8
+    add                     r8,                     QWORD PTR [spindleLocalBarrierBase]
+    
+    ; Read in the current value of the thread barrier flag.
+    mov                     edx,                    DWORD PTR [r8+128]
+
+    ; Atomically decrement the thread barrier counter and start waiting if needed.
+    mov                     eax,                    0ffffffffh
+    lock xadd               DWORD PTR [r8],         eax
+    jne                     spindleBarrierLocal_Loop
+
+    ; If all other threads have been here, clean up and signal them to wake up.
+    spindleAsmHelperGetGlobalThreadCount            ecx
+    mov                     DWORD PTR [r8],         ecx
+    inc                     DWORD PTR [r8+128]
+    jmp                     spindleBarrierLocal_Done
+
+    ; Wait here for the signal.
+  spindleBarrierLocal_Loop:
+    pause
+    cmp                     edx,                    DWORD PTR [r8+128]
+    je                      spindleBarrierLocal_Loop
+    
+  spindleBarrierLocal_Done:
     ret
 spindleBarrierLocal                         ENDP
 
