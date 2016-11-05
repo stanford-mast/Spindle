@@ -1,5 +1,5 @@
 ###############################################################################
-# libspindle
+# Spindle
 #   Multi-platform topology-aware thread control library.
 #   Distributes a set of synchronized tasks over cores in the system.
 ###############################################################################

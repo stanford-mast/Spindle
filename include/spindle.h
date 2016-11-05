@@ -1,5 +1,5 @@
 /*****************************************************************************
- * libspindle
+ * Spindle
  *   Multi-platform topology-aware thread control library.
  *   Distributes a set of synchronized tasks over cores in the system.
  *****************************************************************************
@@ -24,7 +24,7 @@
 typedef void (* TSpindleFunc)(void* arg);
 
 /// Enumerates supported SMT thread assignment policies.
-/// Each policy specifies how libspindle should order its assignment of threads to cores, where each core may have multiple logical threads (by means of simultaneous multithreading, or SMT).
+/// Each policy specifies how Spindle should order its assignment of threads to cores, where each core may have multiple logical threads (by means of simultaneous multithreading, or SMT).
 /// As an example, consider a task with 7 threads to be assigned to 4 physical cores, each supporting 2 logical cores (hardware threads).
 /// Preferring physical cores would assign threads in the order P0L0, P1L0, P2L0, P3L0, P0L1, P1L1, and finally P2L1.
 /// Preferring logical cores would assign threads in the order P0L0, P0L1, P1L0, P1L1, P2L0, P2L1, and finally P3L0.
@@ -37,7 +37,7 @@ typedef enum ESpindleSMTPolicy
     SpindleSMTPolicyPreferLogical                                           ///< When assigning threads to cores, saturate each physical core (by assigning a thread to all logical cores) before moving onto the next one.
 } ESpindleSMTPolicy;
 
-/// Specifies a libspindle task that can be created and assigned to threads.
+/// Specifies a Spindle task that can be created and assigned to threads.
 typedef struct SSpindleTaskSpec
 {
     TSpindleFunc func;                                                      ///< Starting function to call for each thread.

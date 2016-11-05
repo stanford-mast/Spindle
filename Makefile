@@ -1,5 +1,5 @@
 ###############################################################################
-# libspindle
+# Spindle
 #   Multi-platform topology-aware thread control library.
 #   Distributes a set of synchronized tasks over cores in the system.
 ###############################################################################
@@ -89,7 +89,7 @@ help:
 	@echo 'Targets:'
 	@echo '    spindle'
 	@echo '        Default target.'
-	@echo '        Builds libspindle as a static library.'
+	@echo '        Builds Spindle as a static library.'
 	@echo '    docs'
 	@echo '        Builds HTML and LaTeX documentation using Doxygen.'
 	@echo '    clean'

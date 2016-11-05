@@ -1,5 +1,5 @@
 /*****************************************************************************
- * libspindle
+ * Spindle
  *   Multi-platform topology-aware thread control library.
  *   Distributes a set of synchronized tasks over cores in the system.
  *****************************************************************************
@@ -20,12 +20,20 @@
 
 // -------- PLATFORM-SPECIFIC MACROS --------------------------------------- //
 
+/// Allocates a memory region of size `size` bytes aligned to an `align`-byte boundary.
+/// Implementation is platform-specific.
 #ifdef SPINDLE_WINDOWS
 #define aligned_malloc(size, align)             _aligned_malloc(size, align)
-#define aligned_free(ptr)                       _aligned_free(ptr)
 #else
 #define aligned_malloc(size, align)             memalign(align, size)
-#define aligned_free(addr)                      free(addr)
+#endif
+
+/// Frees an aligned memory region.
+/// Implementation is platform-specific.
+#ifdef SPINDLE_WINDOWS    
+#define aligned_free(ptr)                       _aligned_free(ptr)
+#else
+#define aligned_free(ptr)                       free(ptr)
 #endif
 
  

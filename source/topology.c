@@ -1,5 +1,5 @@
 /*****************************************************************************
- * libspindle
+ * Spindle
  *   Multi-platform topology-aware thread control library.
  *   Distributes a set of synchronized tasks over cores in the system.
  *****************************************************************************
@@ -7,7 +7,7 @@
  * Department of Electrical Engineering, Stanford University
  * Copyright (c) 2016
  *************************************************************************//**
- * @file topology.h
+ * @file topology.c
  *   Implementation of functions for interacting with the `hwloc` topology.
  *****************************************************************************/
 

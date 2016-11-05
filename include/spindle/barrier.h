@@ -1,5 +1,5 @@
 /*****************************************************************************
- * libspindle
+ * Spindle
  *   Multi-platform topology-aware thread control library.
  *   Distributes a set of synchronized tasks over cores in the system.
  *****************************************************************************
@@ -44,7 +44,7 @@ extern SSpindleBarrierData* spindleLocalBarrierBase;
 
 /// Allocates space for all local thread barriers.
 /// Intended to be called during the spawning process.
-/// @param [in] Number of tasks.
+/// @param [in] taskCount Number of tasks.
 /// @return Pointer to the start of the memory region on success, or `NULL` on failure.
 void* spindleAllocateLocalThreadBarriers(uint32_t taskCount);
 
