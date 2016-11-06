@@ -141,14 +141,14 @@ Each thread's task ID corresponds to a logical identifier for the NUMA node on w
 int main(int argc, char* argv[])
 {
     // Use a Spindle-provided helper to figure out the number of NUMA nodes in the system.
-    const uint32_t numNumaNodes = spindleGetSystemNUMANodeCount();
+    const unsigned int numNumaNodes = spindleGetSystemNUMANodeCount();
     
     SSpindleTaskSpec* task = (SSpindleTaskSpec*)malloc(sizeof(SSpindleTaskSpec) * numNumaNodes);
     if (NULL == task)
         return 1;
     
     // Define the tasks iteratively.
-    for (int i = 0; i < numNumaNodes; ++i)
+    for (unsigned int i = 0; i < numNumaNodes; ++i)
     {
         task[i].arg = NULL;
         task[i].func = taskFuncs[0]; // Run the same task function on all NUMA nodes.
