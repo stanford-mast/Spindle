@@ -52,9 +52,10 @@ Each task is specified to Spindle as a _task specification_, which specifies to 
 
 Every thread spawned by Spindle is associated with three identifiers: a _local ID_, a _global ID_, and a _task ID_.
 A thread's local ID is unique only within its task, whereas a thread's global ID is unique across all threads spawned.
-Both such IDs take the form of indices ranging from 0 to the number of threads created, either locally or globally, respectively.
+Both such IDs take the form of indices ranging from 0 to one less than the number of threads created, either locally or globally, respectively.
+Task IDs are defined similarly, ranging from 0 to one less than the number of tasks created.
 
-Note that all threads within a given task must be physically affinitized to logical cores on the same NUMA node.
+All threads within a given task must be physically affinitized to logical cores on the same NUMA node.
 Parallelizing a task across NUMA nodes is supported by creating multiple tasks, one for each desired NUMA node, with the same function and argument.
 This facilitates implementation of tasks that are NUMA-aware; threads can determine their logical NUMA node assignment based on their task ID.
 
@@ -62,7 +63,7 @@ Once spawned, threads can access their respective IDs using spindleGetLocalThrea
 Threads can also access information about the number of threads spawned using spindleGetLocalThreadCount(), spindleGetGlobalThreadCount(), and spindleGetTaskCount().
 These functions should not be called outside of threads spawned by Spindle.
 
-Threads are spawned by calling spindleThreadsSpawn() and passing, as a parameter, a pointer to an array of task specifications and the number of entries in the array.
+Threads are spawned by calling spindleThreadsSpawn() and passing as parameters a pointer to an array of task specifications and the number of entries in the array.
 Each task specification takes the form of an instance of #SSpindleTaskSpec.
 This function blocks until all threads spawned have exited, after which it returns to the caller.
 The calling thread is blocked; only spawned threads execute the tasks.
@@ -81,15 +82,15 @@ This variable is stored in part of the register that Spindle reserves, so access
 
 Spindle assigns threads to logical cores during the thread spawning process.
 A _logical core_ corresponds to a hardware thread and is the smallest available unit of thread affinitization.
-Each _physical core_ in the system contains one or more _logical cores_, depending on whether or not the system supports SMT (simultaneous multithreading).
+Each _physical core_ in the system contains one or more logical cores, depending on whether or not the system supports SMT (simultaneous multithreading).
 Note that Spindle will never assign threads for different tasks to the same physical core.
 
 Every Spindle task specification includes an SMT policy, which tells Spindle how it should assign threads to logical cores in the system.
-One option is to disable SMT entirely, in which case Spindle assigns only one thread to each physical core, irrespective of the number of logical cores contained within it.
+See #ESpindleSMTPolicy for more details on supported SMT policies and associated behaviors.
 
 Spindle's thread assignment process follows these two steps.
 1. Compute the number of physical cores needed to accomodate all threads in a task. If SMT is disabled per the SMT policy, this is equal to the number of threads. Otherwise it is computed by taking into account the number of logical cores per physical core.
-2. Assign one thread to each logical core, in the order specified by the SMT policy. See #ESpindleSMTPolicy for more details.
+2. Assign one thread to each logical core, in the order specified by the SMT policy.
 
 
 # Examples
@@ -134,7 +135,7 @@ int main(int argc, char* argv[])
 ### Example 2: Single NUMA-Aware Task
 
 This example shows how to run a single task on multiple NUMA nodes.
-Each thread's task ID allows it to know, logically, the NUMA node on which it is executing.
+Each thread's task ID corresponds to a logical identifier for the NUMA node on which it is executing.
 
 ~~~{.c}
 int main(int argc, char* argv[])
