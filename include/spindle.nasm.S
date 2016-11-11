@@ -7,14 +7,14 @@
 ; Department of Electrical Engineering, Stanford University
 ; Copyright (c) 2016
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; spindle.inc
+; spindle.nasm.S
 ;   Declaration of external API functions and helpers.
 ;   Top-level assembly-language header file for this library.
-;   To be included externally. This version is for MASM on Windows.
+;   To be included externally. This version is for NASM on Linux.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-IFNDEF __SPINDLE_INC
-__SPINDLE_INC EQU 1
+%ifndef __SPINDLE_INC
+%define __SPINDLE_INC 1
 
 
 ; --------- MACROS ------------------------------------------------------------
@@ -22,85 +22,85 @@ __SPINDLE_INC EQU 1
 ; For the sake of performance, it is recommended that they be used over the API functions.
 
 ; Retrieves the local thread ID and places it in the specified 32-bit register.
-spindleAsmHelperGetLocalThreadID MACRO edest
-    vpextrd edest, xmm15, 0
-ENDM
+%macro spindleAsmHelperGetLocalThreadID 1
+    vpextrd %1, xmm15, 0
+%endmacro
 
 ; Retrieves the global thread ID and places it in the specified 32-bit register.
-spindleAsmHelperGetGlobalThreadID MACRO edest
-    vpextrd edest, xmm15, 1
-ENDM
+%macro spindleAsmHelperGetGlobalThreadID 1
+    vpextrd %1, xmm15, 1
+%endmacro
 
 ; Retrieves the task ID and places it in the specified 32-bit register.
-spindleAsmHelperGetTaskID MACRO edest
-    vpextrd edest, xmm15, 2
-ENDM
+%macro spindleAsmHelperGetTaskID 1
+    vpextrd %1, xmm15, 2
+%endmacro
 
 ; Retrieves the number of threads in the current thread's task and places it in the specified 32-bit register.
-spindleAsmHelperGetLocalThreadCount MACRO edest
-    vpextrd edest, xmm15, 3
-ENDM
+%macro spindleAsmHelperGetLocalThreadCount 1
+    vpextrd %1, xmm15, 3
+%endmacro
 
 ; Retrieves the total number of threads and places it in the specified 32-bit register.
-spindleAsmHelperGetGlobalThreadCount MACRO edest
+%macro spindleAsmHelperGetGlobalThreadCount 1
     vextractf128 xmm0, ymm15, 1
-    vpextrd edest, xmm0, 0
-ENDM
+    vpextrd %1, xmm0, 0
+%endmacro
 
 ; Retrieves the total number of tasks and places it in the specified 32-bit register.
-spindleAsmHelperGetTaskCount MACRO edest
+%macro spindleAsmHelperGetTaskCount 1
     vextractf128 xmm0, ymm15, 1
-    vpextrd edest, xmm0, 1
-ENDM
+    vpextrd %1, xmm0, 1
+%endmacro
 
 ; Sets the per-thread 64-bit variable from the specified 64-bit source register.
-spindleAsmHelperSetLocalVariable MACRO rsrc
+%macro spindleAsmHelperSetLocalVariable 1
     vextractf128 xmm0, ymm15, 1
-    vpinsrq xmm0, xmm0, rsrc, 1
+    vpinsrq xmm0, xmm0, %1, 1
     vinsertf128 ymm15, ymm15, xmm0, 1
-ENDM
+%endmacro
 
 ; Retrieves the per-thread 64-bit variable and places it in the specified 64-bit register.
-spindleAsmHelperGetLocalVariable MACRO rdest
+%macro spindleAsmHelperGetLocalVariable 1
     vextractf128 xmm0, ymm15, 1
-    vpextrq rdest, xmm0, 1
-ENDM
+    vpextrq %1, xmm0, 1
+%endmacro
 
 
 ; --------- FUNCTIONS ---------------------------------------------------------
 ; See "spindle.h" for documentation.
 
-EXTRN spindleThreadsSpawn:PROC
+extern spindleThreadsSpawn
 
-EXTRN spindleGetLocalThreadID:PROC
+extern spindleGetLocalThreadID
 
-EXTRN spindleGetGlobalThreadID:PROC
+extern spindleGetGlobalThreadID
 
-EXTRN spindleGetTaskID:PROC
+extern spindleGetTaskID
 
-EXTRN spindleGetLocalThreadCount:PROC
+extern spindleGetLocalThreadCount
 
-EXTRN spindleGetGlobalThreadCount:PROC
+extern spindleGetGlobalThreadCount
 
-EXTRN spindleGetTaskCount:PROC
+extern spindleGetTaskCount
 
-EXTRN spindleSetLocalVariable:PROC
+extern spindleSetLocalVariable
 
-EXTRN spindleGetLocalVariable:PROC
+extern spindleGetLocalVariable
 
-EXTRN spindleBarrierLocal:PROC
+extern spindleBarrierLocal
 
-EXTRN spindleBarrierGlobal:PROC
+extern spindleBarrierGlobal
 
-EXTRN spindleTimedBarrierLocal:PROC
+extern spindleTimedBarrierLocal
 
-EXTRN spindleTimedBarrierGlobal:PROC
+extern spindleTimedBarrierGlobal
 
-EXTRN spindleGetSystemNUMANodeCount:PROC
+extern spindleGetSystemNUMANodeCount
 
-EXTRN spindleGetNUMANodePhysicalCoreCount:PROC
+extern spindleGetNUMANodePhysicalCoreCount
 
-EXTRN spindleGetNUMANodeMaxThreadCount:PROC
+extern spindleGetNUMANodeMaxThreadCount
 
 
-ENDIF ; __SPINDLE_INC
+%endif ; __SPINDLE_INC
