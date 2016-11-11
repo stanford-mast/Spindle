@@ -11,18 +11,28 @@ Spindle is implemented using a combination of C and assembly.
 
 # Requirements
 
-Compatibility has been verified with 64-bit versions of Windows 10 Pro and Ubuntu 14.04.
-Other Linux distributions are also likely compatible, but they have not been tested.
+To build and link with Spindle, the following are required.
 
-Some features of Spindle make use of AVX instructions introduced in processors of the Sandy Bridge generation.
-Do not attempt to use it on older-generation processors, at the risk of encountering "Illegal Instruction" errors.
+- 64-bit x86-compatible processor with support for AVX instructions
+  
+  Spindle has been tested with Intel processors of the Sandy Bridge generation and newer.
+  Non-Intel processors may also be compatible if they support the required instructions.
+  Do not attempt to use it on older-generation processors, at the risk of encountering "Illegal Instruction" errors.
+  
+- Windows 10 Pro or Ubuntu 14.04
+  
+  64-bit versions of these operating systems are required.
+  Other Linux distributions are likely compatible, but they have not been tested.
 
-To obtain system topology information in a platform-independent manner, Spindle depends on the [**hwloc**](https://www.open-mpi.org/projects/hwloc/) library and has been tested with version 1.11.4.
-Some distributions of Linux may make this library available as a package.
-Otherwise, and in all cases on Windows, it must be downloaded and installed manually.
+- [**hwloc**](https://www.open-mpi.org/projects/hwloc/) and its dependencies
+  
+  Spindle makes use of this library to obtain system topology information in a platform-independent manner.
+  It has been tested with version 1.11.4.
+  Some distributions of Linux may make this library available as a package.
+  Otherwise, and in all cases on Windows, it must be downloaded and installed manually.
 
 
-# Compiling
+# Building
 
 On all platforms, Spindle compiles to a static library.
 
@@ -31,21 +41,32 @@ The Windows build system is based on Visual Studio 2015 Community Edition. Compi
 To build on Linux, just type `make` from within the repository directory.
 
 
-# Using
-
-Documentation is available and can be built using Doxygen.
-
-On Linux, type `make docs` to compile the documentation. On Windows, run the Doxygen tool using the repository directory as the working directory (it may be necessary to create the output directory manually first).
+# Linking and Using
 
 Projects that make use of Spindle should include the top-level spindle.h header file and nothing else.
-Documentation covers both spindle.h and the internal implementation of Spindle, the latter being of interest only to those who wish to modify the implementation of Spindle.
 
 At a low level, Spindle globally reserves and assumes exclusive use of the `ymm15` AVX register. It uses this register to hold thread information.
 Code that executes in regions parallelized by Spindle must not modify the contents of this register, even inadvertently by means of the `vzeroupper` instruction.
 On Linux, projects that use Spindle and make use of vector instructions (SSE, AVX, and so on) should be compiled with the GCC option `-mno-vzeroupper`.
 
+Assuming a Linux-based C-language project that uses Spindle and consists of a single source file called `main.c`, the following command would build and link with Spindle.
 
-# Concepts and Terminology
+    gcc main.c -mno-vzeroupper -pthread -lspindle -lhwloc -lnuma -lpciaccess -lxml2
+
+
+# Getting Started
+
+Documentation is available and can be built using Doxygen.
+It covers both the external API in spindle.h and Spindle's internals, the latter being of interest only to those who wish to modify the implementation of Spindle.
+
+On Linux, type `make docs` to compile the documentation. On Windows, run the Doxygen tool using the repository directory as the working directory (it may be necessary to create the output directory manually first).
+
+The remainder of this section is designed to facilitate a quick understanding of the Spindle API.
+It explains key concepts and defines key terms, providing pointers to relevant API functions and data structures.
+Source code examples are provided immediately following.
+
+
+## Concepts and Terminology
 
 The core unit of execution in Spindle is a _task_: a function that Spindle executes using one or more threads.
 Each task is specified to Spindle as a _task specification_, which specifies to Spindle what function to call, what argument to pass (the same for all threads in a task), and some way to determine both the number of threads to create and how to affinitize them to the system's logical cores.
@@ -93,17 +114,17 @@ Spindle's thread assignment process follows these two steps.
 2. Assign one thread to each logical core, in the order specified by the SMT policy.
 
 
-# Examples
+## Examples
 
 Source code examples are organized into two categories: task specification and task implementation.
 Each category of examples showcases different parts of Spindle's API.
 
 
-## Specifying Tasks
+### Specifying Tasks
 
 All examples in this category assume the existance of an array, `taskFuncs`, of pointers to task functions.
 
-### Example 1: Simple Task Specification
+#### Example 1: Simple Task Specification
 
 This example shows how to specify tasks manually.
 Two tasks are created on the same NUMA node, one which requires 2 threads and one which uses all remaining logical cores, the number of threads being determined automatically.
@@ -132,7 +153,7 @@ int main(int argc, char* argv[])
 }
 ~~~
 
-### Example 2: Single NUMA-Aware Task
+#### Example 2: Single NUMA-Aware Task
 
 This example shows how to run a single task on multiple NUMA nodes.
 Each thread's task ID corresponds to a logical identifier for the NUMA node on which it is executing.
@@ -166,9 +187,12 @@ int main(int argc, char* argv[])
 ~~~
 
 
-## Implementing Tasks
+### Implementing Tasks
 
-### Example 1: Simple Task Implementation
+Task implementations consist of functions that are invoked as part of Spindle's thread spawning process.
+Within the body of a task function, many of Spindle's API functions become available for use, including thread identification and synchronization barriers.
+
+#### Example 1: Simple Task Implementation
 
 This example shows a very simple task function that simply identifies each thread.
 Note that the function signature matches the type definition for #TSpindleFunc.
@@ -187,7 +211,7 @@ void taskFunc(void* arg)
 }
 ~~~
 
-### Example 2: Synchronization
+#### Example 2: Synchronization
 
 When using multiple tasks, potentially with different functions, global barriers can be used to synchronize their executions.
 Note that each task must contain the same number of global barriers, otherwise some threads will become stuck waiting at barriers.
