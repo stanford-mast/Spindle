@@ -13,6 +13,7 @@
 
 #include <hwloc.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 
 // -------- LOCALS --------------------------------------------------------- //
