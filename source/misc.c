@@ -24,11 +24,17 @@
 uint32_t spindleGetSystemNUMANodeCount(void)
 {
     hwloc_topology_t topology = spindleGetSystemTopologyObject();
+    uint32_t numNumaNodes = 0;
 
-    if (NULL == topology)
-        return 0;
-
-    return hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
+    if (NULL != topology)
+    {
+        numNumaNodes = hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
+        
+        if (0 == numNumaNodes)
+            numNumaNodes = 1;
+    }    
+    
+    return numNumaNodes;
 }
 
 // --------
@@ -41,7 +47,7 @@ uint32_t spindleGetNUMANodePhysicalCoreCount(uint32_t numaNodeIndex)
     if (NULL == topology)
         return 0;
     
-    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, numaNodeIndex);
+    numaNodeObject = spindleGetNUMANodeObjectAtIndex(numaNodeIndex);
     if (NULL == numaNodeObject)
         return 0;
     
@@ -58,7 +64,7 @@ uint32_t spindleGetNUMANodeMaxThreadCount(uint32_t numaNodeIndex)
     if (NULL == topology)
         return 0;
     
-    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, numaNodeIndex);
+    numaNodeObject = spindleGetNUMANodeObjectAtIndex(numaNodeIndex);
     if (NULL == numaNodeObject)
         return 0;
     

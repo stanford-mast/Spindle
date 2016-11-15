@@ -135,12 +135,12 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         return __LINE__;
     
     // Figure out the highest possible NUMA node index, for error-checking purposes.
-    numNumaNodes = hwloc_get_nbobjs_by_type(topology, HWLOC_OBJ_NUMANODE);
+    numNumaNodes = spindleGetSystemNUMANodeCount();
     if (1 > numNumaNodes)
         return __LINE__;
     
     // Initialize data structures to assign from the first NUMA node in the system.
-    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, currentNumaNode);
+    numaNodeObject = spindleGetNUMANodeObjectAtIndex(currentNumaNode);
     if (NULL == numaNodeObject)
         return __LINE__;
     
@@ -188,7 +188,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         {
             currentNumaNode = taskSpec[taskIndex].numaNode;
             
-            numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, currentNumaNode);
+            numaNodeObject = spindleGetNUMANodeObjectAtIndex(currentNumaNode);
             if (NULL == numaNodeObject)
             {
                 free((void*)taskStartPhysCore);

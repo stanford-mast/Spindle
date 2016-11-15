@@ -42,6 +42,29 @@ hwloc_topology_t spindleGetSystemTopologyObject(void)
 
 // --------
 
+hwloc_obj_t spindleGetNUMANodeObjectAtIndex(uint32_t numaNodeIndex)
+{
+    hwloc_topology_t topology = spindleGetSystemTopologyObject();
+    hwloc_obj_t numaNodeObject = NULL;
+    
+    if (NULL == topology)
+        return NULL;
+    
+    // Attempt to obtain the NUMA node object directly.
+    numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_NUMANODE, numaNodeIndex);
+    
+    if (NULL == numaNodeObject && 0 == numaNodeIndex)
+    {
+        // Sometimes a NUMA node object does not exist in a single-node system.
+        // If requesting the first node and an object does not exist, retrieve instead the first package.
+        numaNodeObject = hwloc_get_obj_by_type(topology, HWLOC_OBJ_PACKAGE, 0);
+    }
+    
+    return numaNodeObject;
+}
+
+// --------
+
 void spindleDestroySystemTopologyObject(void)
 {
     if (NULL != spindleSystemTopology)
