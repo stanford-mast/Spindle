@@ -96,11 +96,5 @@ EXTRN spindleTimedBarrierLocal:PROC
 
 EXTRN spindleTimedBarrierGlobal:PROC
 
-EXTRN spindleGetSystemNUMANodeCount:PROC
-
-EXTRN spindleGetNUMANodePhysicalCoreCount:PROC
-
-EXTRN spindleGetNUMANodeMaxThreadCount:PROC
-
 
 ENDIF ; __SPINDLE_INC

@@ -24,6 +24,10 @@ To build and link with Spindle, the following are required.
   64-bit versions of these operating systems are required.
   Other Linux distributions are likely compatible, but they have not been tested.
 
+- **Topo**
+  
+  Topo provides some helpers and wrappers around the `hwloc` library.
+
 - [**hwloc**](https://www.open-mpi.org/projects/hwloc/) and its dependencies
   
   Spindle makes use of this library to obtain system topology information in a platform-independent manner.
@@ -51,7 +55,7 @@ On Linux, projects that use Spindle and make use of vector instructions (SSE, AV
 
 Assuming a Linux-based C-language project that uses Spindle and consists of a single source file called `main.c`, the following command would build and link with Spindle.
 
-    gcc main.c -mno-vzeroupper -pthread -lspindle -lhwloc -lnuma -lpciaccess -lxml2
+    gcc main.c -mno-vzeroupper -pthread -lspindle -ltopo -lhwloc -lnuma -lpciaccess -lxml2
 
 
 # Getting Started

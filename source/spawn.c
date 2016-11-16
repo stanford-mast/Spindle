@@ -14,12 +14,12 @@
 #include "../spindle.h"
 #include "barrier.h"
 #include "osthread.h"
-#include "topology.h"
 #include "types.h"
 
 #include <hwloc.h>
 #include <malloc.h>
 #include <stdint.h>
+#include <topo.h>
 
 
 // -------- HELPERS -------------------------------------------------------- //
@@ -130,17 +130,17 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         return 0;
     
     // Obtain the hardware topology object for the current system.
-    topology = spindleGetSystemTopologyObject();
+    topology = topoGetSystemTopologyObject();
     if (NULL == topology)
         return __LINE__;
     
     // Figure out the highest possible NUMA node index, for error-checking purposes.
-    numNumaNodes = spindleGetSystemNUMANodeCount();
+    numNumaNodes = topoGetSystemNUMANodeCount();
     if (1 > numNumaNodes)
         return __LINE__;
     
     // Initialize data structures to assign from the first NUMA node in the system.
-    numaNodeObject = spindleGetNUMANodeObjectAtIndex(currentNumaNode);
+    numaNodeObject = topoGetNUMANodeObjectAtIndex(currentNumaNode);
     if (NULL == numaNodeObject)
         return __LINE__;
     
@@ -188,7 +188,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
         {
             currentNumaNode = taskSpec[taskIndex].numaNode;
             
-            numaNodeObject = spindleGetNUMANodeObjectAtIndex(currentNumaNode);
+            numaNodeObject = topoGetNUMANodeObjectAtIndex(currentNumaNode);
             if (NULL == numaNodeObject)
             {
                 free((void*)taskStartPhysCore);

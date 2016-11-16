@@ -99,11 +99,5 @@
 
 .extern spindleTimedBarrierGlobal
 
-.extern spindleGetSystemNUMANodeCount
-
-.extern spindleGetNUMANodePhysicalCoreCount
-
-.extern spindleGetNUMANodeMaxThreadCount
-
 
 .endif # __SPINDLE_INC
