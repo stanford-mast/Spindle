@@ -22,8 +22,8 @@ INCLUDE_DIR                 = include/$(PROJECT_NAME)
 ASSEMBLY_SOURCE_DIR         = $(OUTPUT_DIR)/asm/source
 ASSEMBLY_INCLUDE_DIR        = $(OUTPUT_DIR)/asm/include
 
-OUTPUT_BASE_DIR				= output
-OUTPUT_DOCS_DIR				= $(OUTPUT_BASE_DIR)/docs
+OUTPUT_BASE_DIR             = output
+OUTPUT_DOCS_DIR             = $(OUTPUT_BASE_DIR)/docs
 OUTPUT_DIR                  = $(OUTPUT_BASE_DIR)/$(PLATFORM_NAME)
 OUTPUT_FILE                 = lib$(PROJECT_NAME).a
 
@@ -41,7 +41,7 @@ ASSEMBLY_HEADER_SUFFIX      = .S
 CC                          = gcc
 CXX                         = g++
 AS                          = as
-AR							= ar
+AR                          = ar
 
 CCFLAGS                     = -O3 -Wall -fPIC -std=c11 -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -D_GNU_SOURCE -DSPINDLE_LINUX
 CXXFLAGS                    = -O3 -Wall -fPIC -std=c++0x -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -DSPINDLE_LINUX
