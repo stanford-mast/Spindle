@@ -134,6 +134,8 @@ This example shows how to specify tasks manually.
 Two tasks are created on the same NUMA node, one which requires 2 threads and one which uses all remaining logical cores, the number of threads being determined automatically.
 
 ~~~{.c}
+#include <spindle.h>
+
 int main(int argc, char* argv[])
 {
     SSpindleTaskSpec task[2];
@@ -163,10 +165,13 @@ This example shows how to run a single task on multiple NUMA nodes.
 Each thread's task ID corresponds to a logical identifier for the NUMA node on which it is executing.
 
 ~~~{.c}
+#include <spindle.h>
+#include <topo.h>
+
 int main(int argc, char* argv[])
 {
     // Use a Spindle-provided helper to figure out the number of NUMA nodes in the system.
-    const unsigned int numNumaNodes = spindleGetSystemNUMANodeCount();
+    const unsigned int numNumaNodes = topoGetSystemNUMANodeCount();
     
     SSpindleTaskSpec* task = (SSpindleTaskSpec*)malloc(sizeof(SSpindleTaskSpec) * numNumaNodes);
     if (NULL == task)
