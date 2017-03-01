@@ -20,11 +20,11 @@
 // -------- TYPE DEFINITIONS ----------------------------------------------- //
 
 /// Represents the layout of storage space used to hold barrier-related quantities.
-/// A single 32-bit (4-byte) value is accompanied by 124 bytes of padding, to align on a two-cache-line boundary.
+/// A single 32-bit (4-byte) value is accompanied by 124 bytes of padding, to align on a cache-line boundary.
 typedef struct SSpindleBarrierData
 {
     uint32_t value;                                                         ///< Data value.
-    uint32_t padding[31];                                                   ///< Unused, two-cache-line padding.
+    uint32_t padding[15];                                                   ///< Unused, cache-line padding.
 } SSpindleBarrierData;
 
 
