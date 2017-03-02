@@ -43,6 +43,7 @@ static void* spindleInternalThreadStartFuncLinux(void* arg)
     // Wait for all threads, then call the real thread starting function.
     spindleBarrierGlobal();
     threadSpec->func(threadSpec->arg);
+    spindleBarrierGlobal();
     
     return NULL;
 }
@@ -78,5 +79,13 @@ uint32_t spindleJoinThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount
             return __LINE__;
     }
     
+    return 0;
+}
+
+// --------
+
+uint32_t spindleStartCurrentThread(SSpindleThreadInfo* threadSpec)
+{
+    spindleInternalThreadStartFuncLinux((void*)threadSpec);
     return 0;
 }

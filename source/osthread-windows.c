@@ -44,6 +44,7 @@ static DWORD WINAPI spindleInternalThreadStartFuncWindows(LPVOID arg)
     // Wait for all threads, then call the real thread starting function.
     spindleBarrierGlobal();
     threadSpec->func(threadSpec->arg);
+    spindleBarrierGlobal();
     
     return 0;
 }
@@ -80,4 +81,12 @@ uint32_t spindleJoinThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount
     
     free((void*)threadHandles);
     return (uint32_t)waitResult;
+}
+
+// --------
+
+uint32_t spindleStartCurrentThread(SSpindleThreadInfo* threadSpec)
+{
+    spindleInternalThreadStartFuncWindows((LPVOID)threadSpec);
+    return 0;
 }

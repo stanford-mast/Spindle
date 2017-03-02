@@ -94,7 +94,7 @@ spindleBarrierLocal                         PROC PUBLIC
     jne                     spindleBarrierLocal_Loop
 
     ; If all other threads have been here, clean up and signal them to wake up.
-    spindleAsmHelperGetGlobalThreadCount            ecx
+    spindleAsmHelperGetLocalThreadCount             ecx
     mov                     DWORD PTR [r8],         ecx
     inc                     DWORD PTR [r8+64]
     jmp                     spindleBarrierLocal_Done

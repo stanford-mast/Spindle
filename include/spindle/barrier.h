@@ -30,10 +30,10 @@ typedef struct SSpindleBarrierData
 
 // -------- GLOBALS -------------------------------------------------------- //
 
-/// Storage area for the counter of threads that have reached the global barrier, plus two-cache-line padding.
+/// Storage area for the counter of threads that have reached the global barrier, plus cache-line padding.
 extern SSpindleBarrierData spindleGlobalBarrierCounter;
 
-/// Storage area for the global barrier flag, on which threads spin while waiting for the global barrier, plus two-cache-line padding.
+/// Storage area for the global barrier flag, on which threads spin while waiting for the global barrier, plus cache-line padding.
 extern SSpindleBarrierData spindleGlobalBarrierFlag;
 
 /// Base address for all local barrier counters and flags.
