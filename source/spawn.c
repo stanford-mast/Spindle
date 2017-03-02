@@ -18,6 +18,7 @@
 
 #include <hwloc.h>
 #include <malloc.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <topo.h>
 
@@ -105,7 +106,7 @@ static hwloc_obj_t spindleHelperGetThreadAffinityObject(hwloc_topology_t topolog
 // -------- FUNCTIONS ------------------------------------------------------ //
 // See "spindle.h" for documentation.
 
-uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
+uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, bool useCurrentThread)
 {
     SSpindleThreadInfo* threadAssignments = NULL;
     uint32_t nextThreadAssignmentIndex = 0;
@@ -355,7 +356,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount)
     free((void*)taskNumThreads);
     
     // Create the threads and wait for the result.
-    threadResult = spindleCreateThreads(threadAssignments, totalNumThreads);
+    threadResult = spindleCreateThreads(threadAssignments, totalNumThreads, useCurrentThread);
     
     // Free allocated memory and return.
     spindleFreeLocalThreadBarriers();

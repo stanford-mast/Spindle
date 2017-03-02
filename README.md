@@ -152,8 +152,8 @@ int main(int argc, char* argv[])
     task[1].numThreads = 0; // Use all remaining available logical cores.
     task[1].smtPolicy = SpindleSMTPolicyPreferLogical;
     
-    // Spawn the threads.
-    spindleThreadsSpawn(task, 2);
+    // Spawn the threads, using the calling thread as one of the workers.
+    spindleThreadsSpawn(task, 2, true);
     
     return 0;
 }
@@ -187,8 +187,8 @@ int main(int argc, char* argv[])
         task[i].smtPolicy = SpindleSMTPolicyPreferLogical;
     }
     
-    // Spawn the threads.
-    spindleThreadsSpawn(task, numNumaNodes);
+    // Spawn the threads, using the calling thread as one of the workers.
+    spindleThreadsSpawn(task, numNumaNodes, true);
     
     free((void*)task);
     return 0;

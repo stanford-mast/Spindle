@@ -17,6 +17,7 @@
 #include "types.h"
 
 #include <hwloc.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -37,8 +38,9 @@ hwloc_thread_t spindleCreateOSThread(SSpindleThreadInfo* threadSpec);
 /// Returns once all created threads have terminated or an error occurs.
 /// @param [in, out] threadSpec Array of thread assignment specifications. The threadHandle members are filled with thread identification information during this function.
 /// @param [in] threadCount Number of threads to create.
+/// @param [in] useCurrentThread `true` to use calling thread as a worker, `false` otherwise.
 /// @return 0 once all threads terminate successfully, or nonzero in the event of an error.
-uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount);
+uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount, bool useCurrentThread);
 
 /// Retrieves the OS-specific handle that identifes the calling thread.
 /// This is a platform-specific operation.

@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -57,8 +58,9 @@ extern "C" {
 /// NUMA node indices must appear in monotonically increasing order in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
 /// @param [in] taskSpec Task specifications, as an array.
 /// @param [in] taskCount Number of tasks specified.
+/// @param [in] useCurrentThread `true` if the calling thread should be used as a worker (can improve performance), `false` otherwise.
 /// @return 0 once all spawned threads have terminated, or nonzero in the event of an error.
-uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount);
+uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, bool useCurrentThread);
 
 /// Retrieves the current thread's local ID within its task.
 /// Undefined return value if called outside the context of a code region parallelized by this library.

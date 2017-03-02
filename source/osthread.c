@@ -16,6 +16,7 @@
 #include "types.h"
 
 #include <hwloc.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -29,15 +30,31 @@ void spindleAffinitizeCurrentOSThread(hwloc_topology_t topology, hwloc_obj_t aff
 
 // --------
 
-uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount)
+uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCount, bool useCurrentThread)
 {
-    for (uint32_t i = 0; i < threadCount; ++i)
+    if (useCurrentThread)
     {
-        threadSpec[i].threadHandle = spindleCreateOSThread(&threadSpec[i]);
-        
-        if ((hwloc_thread_t)NULL == threadSpec[i].threadHandle)
-            return __LINE__;
+        for (uint32_t i = 1; i < threadCount; ++i)
+        {
+            threadSpec[i].threadHandle = spindleCreateOSThread(&threadSpec[i]);
+
+            if ((hwloc_thread_t)NULL == threadSpec[i].threadHandle)
+                return __LINE__;
+        }
+
+        threadSpec[0].threadHandle = spindleIdentifyCurrentOSThread();
+        return spindleStartCurrentThread(&threadSpec[0]);
     }
-    
-    return spindleJoinThreads(threadSpec, threadCount);
+    else
+    {
+        for (uint32_t i = 0; i < threadCount; ++i)
+        {
+            threadSpec[i].threadHandle = spindleCreateOSThread(&threadSpec[i]);
+
+            if ((hwloc_thread_t)NULL == threadSpec[i].threadHandle)
+                return __LINE__;
+        }
+
+        return spindleJoinThreads(threadSpec, threadCount);
+    }
 }
