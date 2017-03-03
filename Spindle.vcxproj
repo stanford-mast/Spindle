@@ -12,7 +12,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{FCC5524F-B75C-4783-8818-F3CCD329F4AC}</ProjectGuid>
-    <RootNamespace>spindle</RootNamespace>
+    <RootNamespace>Spindle</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

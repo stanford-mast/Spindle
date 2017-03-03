@@ -4,7 +4,7 @@ It features a simple API for dispatching tasks to multiple threads and affinitiz
 Synchronization between threads is provided by means of thread barriers, both locally (within a task) and globally (across all spawned threads).
 The barrier implementation is designed to be high performance, leveraging the hardware cache coherency protocol to reduce overhead and virtually eliminate cache line thrashing.
 A thread waiting at a barrier spins on a shared cache line that is not written until the last thread passes the barrier.
-This write-once behavior keeps the shared cache line in `S` state in the caches of all cores while they are waiting at the barrier.
+This write-once behavior keeps the shared cache line in "S" state in the caches of all cores while they are waiting at the barrier.
 
 Spindle is implemented using a combination of C and assembly.
 
@@ -24,9 +24,9 @@ To build and link with Spindle, the following are required.
   64-bit versions of these operating systems are required.
   Other Linux distributions are likely compatible, but they have not been tested.
 
-- **Topo**
+- [**Topo**](https://github.com/samuelgr/Topo)
   
-  Topo provides some helpers and wrappers around the `hwloc` library.
+  Topo provides some helpers and wrappers around the hwloc library.
 
 - [**hwloc**](https://www.open-mpi.org/projects/hwloc/) and its dependencies
   
@@ -53,7 +53,7 @@ At a low level, Spindle globally reserves and assumes exclusive use of the `ymm1
 Code that executes in regions parallelized by Spindle must not modify the contents of this register, even inadvertently by means of the `vzeroupper` instruction.
 On Linux, projects that use Spindle and make use of vector instructions (SSE, AVX, and so on) should be compiled with the GCC option `-mno-vzeroupper`.
 
-Assuming a Linux-based C-language project that uses Spindle and consists of a single source file called `main.c`, the following command would build and link with Spindle.
+Assuming a Linux-based C-language project that uses Spindle and consists of a single source file called "main.c", the following command would build and link with Spindle.
 
     gcc main.c -mno-vzeroupper -pthread -lspindle -ltopo -lhwloc -lnuma -lpciaccess -lxml2
 
