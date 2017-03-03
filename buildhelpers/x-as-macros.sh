@@ -6,7 +6,7 @@
 ###############################################################################
 # Authored by Samuel Grossman
 # Department of Electrical Engineering, Stanford University
-# (c) 2015-2016
+# (c) 2016-2017
 ###############################################################################
 # x-as-macros.sh
 #   Tranformation script for assembly macros, MASM -> AS.
