@@ -18,7 +18,15 @@
 #include <stdint.h>
 
 
-/* -------- TYPE DEFINITIONS ----------------------------------------------- */
+// -------- VERSION INFORMATION -------------------------------------------- //
+
+/// 32-bit unsigned integer that represents the version of Spindle.
+/// Incremented each time a change is made that affects the API.
+/// - Version 1: Initial release.
+#define SPINDLE_LIBRARY_VERSION                 0x00000001
+
+
+// -------- TYPE DEFINITIONS ----------------------------------------------- //
 
 /// Signature of the starting function of each thread.
 /// Must return nothing and accept a single parameter.
@@ -53,6 +61,10 @@ typedef struct SSpindleTaskSpec
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/// Retrieves and returns the compiled Spindle library version.
+/// @return Spindle library version number.
+uint32_t spindleGetLibraryVersion(void);
 
 /// Spawns threads according to the provided task specification.
 /// NUMA node indices must appear in monotonically increasing order in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.

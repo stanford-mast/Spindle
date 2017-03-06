@@ -55,6 +55,9 @@
     <ClCompile Include="source\barrier.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\version.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\barrier.asm">
