@@ -26,6 +26,18 @@
 #define SPINDLE_LIBRARY_VERSION                 0x00000001
 
 
+// -------- CONSTANTS ------------------------------------------------------ //
+
+/// In the `numThreads` field of #SSpindleTaskSpec, specifies to use all available threads on a NUMA node.
+#define kSpindleTaskSpecAllAvailableThreads     0
+
+/// In the `numThreads` field of #SSpindleTaskSpec, specifies to use the same number of threads for the current task as for the previous task.
+/// When spawning threads, Spindle processes task specifications in index order (0 to `taskCount - 1`).
+/// If `taskSpec[i].numThreads` is equal to this value, then the number of threads will be set to whatever Spindle used or calculated for `taskSpec[i-1]`.
+/// If there are insufficient threads left on the current NUMA node, then this will result in an error.
+#define kSpindleTaskSpecThreadsSameAsPrevious   UINT32_MAX
+
+
 // -------- TYPE DEFINITIONS ----------------------------------------------- //
 
 /// Signature of the starting function of each thread.

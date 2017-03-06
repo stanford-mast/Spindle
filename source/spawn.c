@@ -123,6 +123,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
     uint32_t currentNumaNode = 0;
     uint32_t threadsLeftOnCurrentNumaNode = 0;
     uint32_t coresLeftOnCurrentNumaNode = 0;
+    uint32_t numThreadsRequested = 0;
     uint32_t numNumaNodes = 0;
     uint32_t totalNumThreads = 0;
     
@@ -211,8 +212,31 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
             }
         }
         
+        // Figure out the requested number of threads, based on any special constants passed.
+        switch (taskSpec[taskIndex].numThreads)
+        {
+        case kSpindleTaskSpecThreadsSameAsPrevious:
+            // Use the same number of threads as was ultimately used for the previous task.
+            if (0 == taskIndex)
+            {
+                // Cannot assign same as previous number of threads if the current task is the first one specified.
+                free((void*)taskStartPhysCore);
+                free((void*)taskEndPhysCore);
+                free((void*)taskNumThreads);
+                return __LINE__;
+            }
+            
+            numThreadsRequested = taskNumThreads[taskIndex - 1];
+            break;
+        
+        default:
+            // Use whatever number of threads as was specified directly in the input.
+            numThreadsRequested = taskSpec[taskIndex].numThreads;
+            break;
+        }
+        
         // Find the ending physical core for the current task, based on the number of threads specified.
-        if (0 == taskSpec[taskIndex].numThreads)
+        if (kSpindleTaskSpecAllAvailableThreads == numThreadsRequested)
         {
             // Verify that at least one core remains available on the current NUMA node.
             if (1 > coresLeftOnCurrentNumaNode)
@@ -254,7 +278,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
             uint32_t numThreadsAssignedForTask = 0;
             
             // Verify a sufficient number of cores and threads left on the current NUMA node.
-            if (threadsLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads || (SpindleSMTPolicyDisableSMT == taskSpec[taskIndex].smtPolicy && coresLeftOnCurrentNumaNode < taskSpec[taskIndex].numThreads))
+            if (threadsLeftOnCurrentNumaNode < numThreadsRequested || (SpindleSMTPolicyDisableSMT == taskSpec[taskIndex].smtPolicy && coresLeftOnCurrentNumaNode < numThreadsRequested))
             {
                 free((void*)taskStartPhysCore);
                 free((void*)taskEndPhysCore);
@@ -266,10 +290,10 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
             taskStartPhysCore[taskIndex] = physicalCoreObject->logical_index;
 
             // Specify the number of threads for the current task.
-            taskNumThreads[taskIndex] = taskSpec[taskIndex].numThreads;
+            taskNumThreads[taskIndex] = numThreadsRequested;
             
             // Assign one physical core at a time to the present task, 
-            while (numThreadsAssignedForTask < taskSpec[taskIndex].numThreads)
+            while (numThreadsAssignedForTask < numThreadsRequested)
             {
                 // Calculate the number of threads consumed by the present physical core.
                 const uint32_t numThreadsConsumed = hwloc_get_nbobjs_inside_cpuset_by_type(topology, physicalCoreObject->cpuset, HWLOC_OBJ_PU);
