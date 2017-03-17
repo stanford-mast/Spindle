@@ -113,6 +113,7 @@
     <ClCompile Include="source\osthread-windows.c" />
     <ClCompile Include="source\osthread.c" />
     <ClCompile Include="source\spawn.c" />
+    <ClCompile Include="source\version.c" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\barrier.asm" />

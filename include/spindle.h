@@ -18,7 +18,27 @@
 #include <stdint.h>
 
 
-/* -------- TYPE DEFINITIONS ----------------------------------------------- */
+// -------- VERSION INFORMATION -------------------------------------------- //
+
+/// 32-bit unsigned integer that represents the version of Spindle.
+/// Incremented each time a change is made that affects the API.
+/// - Version 1: Initial release.
+#define SPINDLE_LIBRARY_VERSION                 0x00000001
+
+
+// -------- CONSTANTS ------------------------------------------------------ //
+
+/// In the `numThreads` field of #SSpindleTaskSpec, specifies to use all available threads on a NUMA node.
+#define kSpindleTaskSpecAllAvailableThreads     0
+
+/// In the `numThreads` field of #SSpindleTaskSpec, specifies to use the same number of threads for the current task as for the previous task.
+/// When spawning threads, Spindle processes task specifications in index order (0 to `taskCount - 1`).
+/// If `taskSpec[i].numThreads` is equal to this value, then the number of threads will be set to whatever Spindle used or calculated for `taskSpec[i-1]`.
+/// If there are insufficient threads left on the current NUMA node, then this will result in an error.
+#define kSpindleTaskSpecThreadsSameAsPrevious   UINT32_MAX
+
+
+// -------- TYPE DEFINITIONS ----------------------------------------------- //
 
 /// Signature of the starting function of each thread.
 /// Must return nothing and accept a single parameter.
@@ -53,6 +73,10 @@ typedef struct SSpindleTaskSpec
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/// Retrieves and returns the compiled Spindle library version.
+/// @return Spindle library version number.
+uint32_t spindleGetLibraryVersion(void);
 
 /// Spawns threads according to the provided task specification.
 /// NUMA node indices must appear in monotonically increasing order in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
