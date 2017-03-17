@@ -75,26 +75,27 @@ _TEXT                                       SEGMENT
 
 ; Implements a thread barrier.
 ; Invoked by the various routines that expose thread barriers to the library user.
-; Requires passing in the number of threads for which to wait (typically the number of threads globally or locally), addresses of counter and flag, and label names to use.
+; Register parameters: ecx (number of threads for which to wait), r8 (memory address of barrier counter), r9 (memory address of barrier flag)
+; Macro parameters: label to use for the internal loop, label to use for completion
 ; Internally uses and overwrites eax and edx.
-spindleBarrier                              MACRO eNumThreads, mem32Counter, mem32Flag, labelLoop, labelDone
+spindleBarrier                              MACRO labelLoop, labelDone
     ; Read in the current value of the thread barrier flag.
-    mov                     edx,                    mem32Flag
+    mov                     edx,                    DWORD PTR [r9]
 
     ; Atomically decrement the thread barrier counter and start waiting if needed.
     mov                     eax,                    0ffffffffh
-    lock xadd               mem32Counter,           eax
+    lock xadd               DWORD PTR [r8],         eax
     jne                     labelLoop
 
     ; If all other threads have been here, clean up and signal them to wake up.
-    mov                     mem32Counter,           eNumThreads
-    inc                     mem32Flag
+    mov                     DWORD PTR [r8],         ecx
+    inc                     DWORD PTR [r9]
     jmp                     labelDone
 
     ; Wait here for the signal.
   labelLoop:
     pause
-    cmp                     edx,                    mem32Flag
+    cmp                     edx,                    DWORD PTR [r9]
     je                      labelLoop
     
   labelDone:
@@ -110,12 +111,14 @@ spindleBarrierLocal                         PROC PUBLIC
     spindleAsmHelperGetTaskID                       r8d
     shl                     r8,                     7
     add                     r8,                     QWORD PTR [spindleLocalBarrierBase]
+    mov                     r9,                     r8
+    add                     r9,                     64
     
     ; Number of threads for which to wait is equal to the number of threads that exist locally in the current task.
     spindleAsmHelperGetLocalThreadCount             ecx
     
     ; Invoke the barrier itself.
-    spindleBarrier          ecx,                    DWORD PTR [r8],         DWORD PTR [r8+64],      spindleBarrierLocal_Loop,                       spindleBarrierLocal_Done
+    spindleBarrier          spindleBarrierLocal_Loop,                       spindleBarrierLocal_Done
 
 	; All threads in the present task have passed the barrier.
     ret
@@ -132,7 +135,7 @@ spindleBarrierGlobal                        PROC PUBLIC
     spindleAsmHelperGetGlobalThreadCount            ecx
     
     ; Invoke the barrier itself.
-    spindleBarrier          ecx,                    DWORD PTR [r8],         DWORD PTR [r9],         spindleBarrierGlobal_Loop,                      spindleBarrierGlobal_Done
+    spindleBarrier          spindleBarrierGlobal_Loop,                      spindleBarrierGlobal_Done
 
 	; All threads globally have passed the barrier.
     ret
@@ -149,7 +152,7 @@ spindleBarrierInternalGlobal                PROC PUBLIC
     spindleAsmHelperGetGlobalThreadCount            ecx
     
     ; Invoke the barrier itself.
-    spindleBarrier          ecx,                    DWORD PTR [r8],         DWORD PTR [r9],         spindleBarrierInternalGlobal_Loop,              spindleBarrierInternalGlobal_Done
+    spindleBarrier          spindleBarrierInternalGlobal_Loop,              spindleBarrierInternalGlobal_Done
     
 	; All threads globally have passed the barrier.
     ret
