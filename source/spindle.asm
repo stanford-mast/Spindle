@@ -8,10 +8,9 @@
 ; Copyright (c) 2016-2017
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; spindle.asm
-;   Implementation of external API functions.
+;   Implementation of most external API functions, except for barriers.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-INCLUDE barrier.inc
 INCLUDE helpers.inc
 INCLUDE registers.inc
 
@@ -75,114 +74,6 @@ spindleGetLocalVariable                     PROC PUBLIC
     spindleAsmHelperGetLocalVariable                r_retval
     ret
 spindleGetLocalVariable                     ENDP
-
-; ---------
-
-spindleBarrierLocal                         PROC PUBLIC
-    ; Calculate the memory address within the local barrier memory region for the current thread's barrier counter and flag.
-    ; This is based on the thread's task ID.
-    spindleAsmHelperGetTaskID                       r8d
-    shl                     r8,                     7
-    add                     r8,                     QWORD PTR [spindleLocalBarrierBase]
-    
-    ; Read in the current value of the thread barrier flag.
-    mov                     edx,                    DWORD PTR [r8+64]
-
-    ; Atomically decrement the thread barrier counter and start waiting if needed.
-    mov                     eax,                    0ffffffffh
-    lock xadd               DWORD PTR [r8],         eax
-    jne                     spindleBarrierLocal_Loop
-
-    ; If all other threads have been here, clean up and signal them to wake up.
-    spindleAsmHelperGetLocalThreadCount             ecx
-    mov                     DWORD PTR [r8],         ecx
-    inc                     DWORD PTR [r8+64]
-    jmp                     spindleBarrierLocal_Done
-
-    ; Wait here for the signal.
-  spindleBarrierLocal_Loop:
-    pause
-    cmp                     edx,                    DWORD PTR [r8+64]
-    je                      spindleBarrierLocal_Loop
-    
-  spindleBarrierLocal_Done:
-    ret
-spindleBarrierLocal                         ENDP
-
-; ---------
-
-spindleBarrierGlobal                        PROC PUBLIC
-    ; Read in the current value of the thread barrier flag.
-    mov                     edx,                    DWORD PTR [spindleGlobalBarrierFlag]
-
-    ; Atomically decrement the thread barrier counter and start waiting if needed.
-    mov                     eax,                    0ffffffffh
-    lock xadd               DWORD PTR [spindleGlobalBarrierCounter],        eax
-    jne                     spindleBarrierGlobal_Loop
-
-    ; If all other threads have been here, clean up and signal them to wake up.
-    spindleAsmHelperGetGlobalThreadCount            ecx
-    mov                     DWORD PTR [spindleGlobalBarrierCounter],        ecx
-    inc                     DWORD PTR [spindleGlobalBarrierFlag]
-    jmp                     spindleBarrierGlobal_Done
-
-    ; Wait here for the signal.
-  spindleBarrierGlobal_Loop:
-    pause
-    cmp                     edx,                    DWORD PTR [spindleGlobalBarrierFlag]
-    je                      spindleBarrierGlobal_Loop
-    
-  spindleBarrierGlobal_Done:
-    ret
-spindleBarrierGlobal                        ENDP
-
-; ---------
-
-spindleTimedBarrierLocal                    PROC PUBLIC
-    ; Capture the initial timestamp.
-    lfence
-    rdtsc
-    shl                     rdx,                    32
-    or                      rax,                    rdx
-    mov                     r8,                     rax
-    
-    ; Perform the barrier.
-    call                    spindleBarrierLocal
-    
-    ; Capture the final timestamp and calculate the time taken.
-    lfence
-    rdtsc
-    shl                     rdx,                    32
-    or                      rax,                    rdx
-    sub                     rax,                    r8
-    
-    mov                     r_retval,               rax
-    ret
-spindleTimedBarrierLocal                    ENDP
-
-; ---------
-
-spindleTimedBarrierGlobal                   PROC PUBLIC
-    ; Capture the initial timestamp.
-    lfence
-    rdtsc
-    shl                     rdx,                    32
-    or                      rax,                    rdx
-    mov                     r8,                     rax
-    
-    ; Perform the barrier.
-    call                    spindleBarrierGlobal
-    
-    ; Capture the final timestamp and calculate the time taken.
-    lfence
-    rdtsc
-    shl                     rdx,                    32
-    or                      rax,                    rdx
-    sub                     rax,                    r8
-    
-    mov                     r_retval,               rax
-    ret
-spindleTimedBarrierGlobal                   ENDP
 
 
 _TEXT                                       ENDS

@@ -12,6 +12,8 @@
  *   This file contains platform-independent functions.
  *****************************************************************************/
 
+#include "barrier.h"
+#include "init.h"
 #include "osthread.h"
 #include "types.h"
 
@@ -57,4 +59,22 @@ uint32_t spindleCreateThreads(SSpindleThreadInfo* threadSpec, uint32_t threadCou
 
         return spindleJoinThreads(threadSpec, threadCount);
     }
+}
+
+// --------
+
+void spindleRunThreadSpec(SSpindleThreadInfo* threadSpec)
+{
+    // Affinitize the thread as required by the thread specification.
+    spindleAffinitizeCurrentOSThread(threadSpec->topology, threadSpec->affinityObject);
+
+    // Initialize thread identification information.
+    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->taskID);
+    spindleSetThreadCounts(threadSpec->localThreadCount, threadSpec->globalThreadCount, threadSpec->taskCount);
+    spindleInitializeLocalVariable();
+
+    // Wait for all threads, then call the real thread starting function.
+    spindleBarrierInternalGlobal();
+    threadSpec->func(threadSpec->arg);
+    spindleBarrierInternalGlobal();
 }

@@ -12,8 +12,6 @@
  *   This file contains Windows-specific functions.
  *****************************************************************************/
 
-#include "../spindle.h"
-#include "init.h"
 #include "osthread.h"
 #include "types.h"
 
@@ -31,21 +29,7 @@
 /// @return 0 upon completion of the user-supplied code.
 static DWORD WINAPI spindleInternalThreadStartFuncWindows(LPVOID arg)
 {
-    SSpindleThreadInfo* threadSpec = (SSpindleThreadInfo*)arg;
-    
-    // Affinitize the thread as required by the thread specification.
-    spindleAffinitizeCurrentOSThread(threadSpec->topology, threadSpec->affinityObject);
-
-    // Initialize thread identification information.
-    spindleSetThreadID(threadSpec->localThreadID, threadSpec->globalThreadID, threadSpec->taskID);
-    spindleSetThreadCounts(threadSpec->localThreadCount, threadSpec->globalThreadCount, threadSpec->taskCount);
-    spindleInitializeLocalVariable();
-
-    // Wait for all threads, then call the real thread starting function.
-    spindleBarrierGlobal();
-    threadSpec->func(threadSpec->arg);
-    spindleBarrierGlobal();
-    
+    spindleRunThreadSpec((SSpindleThreadInfo*)arg);
     return 0;
 }
 

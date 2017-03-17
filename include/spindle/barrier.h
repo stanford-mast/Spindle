@@ -48,6 +48,11 @@ extern SSpindleBarrierData* spindleLocalBarrierBase;
 /// @return Pointer to the start of the memory region on success, or `NULL` on failure.
 void* spindleAllocateLocalThreadBarriers(uint32_t taskCount);
 
+/// Provides a barrier that no thread can pass until all threads have reached this point in the execution.
+/// For internal use only. This is the same as the external version, except it uses a different area of memory to help catch end-user bugs.
+/// If a user specifies tasks with different numbers of global barriers, Spindle needs a separate internal barrier to help avoid allowing the program to proceed past thread spawning.
+void spindleBarrierInternalGlobal(void);
+
 /// Frees all previously-allocated space for local thread barriers.
 /// Intended to be called after all spawned threads have terminated.
 void spindleFreeLocalThreadBarriers(void);
