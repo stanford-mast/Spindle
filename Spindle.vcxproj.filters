@@ -38,9 +38,6 @@
     <None Include="include\spindle\registers.inc">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="include\spindle\barrier.inc">
-      <Filter>Header Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\spawn.c">

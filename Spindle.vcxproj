@@ -104,7 +104,6 @@
     <ClInclude Include="include\spindle\types.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="include\spindle\barrier.inc" />
     <None Include="include\spindle\helpers.inc" />
     <None Include="include\spindle\registers.inc" />
   </ItemGroup>
