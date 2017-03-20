@@ -55,7 +55,7 @@ On Linux, projects that use Spindle and make use of vector instructions (SSE, AV
 
 Assuming a Linux-based C-language project that uses Spindle and consists of a single source file called "main.c", the following command would build and link with Spindle.
 
-    gcc main.c -mno-vzeroupper -pthread -lspindle -ltopo -lhwloc -lnuma -lpciaccess -lxml2
+    g++ main.c -mno-vzeroupper -pthread -lspindle -ltopo -lhwloc -lnuma -lpciaccess -lxml2
 
 
 # Getting Started
