@@ -23,6 +23,13 @@
 #include <topo.h>
 
 
+// -------- LOCALS --------------------------------------------------------- //
+
+/// Specifies whether execution is taking place within a Spindle parallel region.
+/// Only one such region can exist at a time.
+static bool inParallelRegion = false;
+
+
 // -------- HELPERS -------------------------------------------------------- //
 
 /// Retrieves the `hwloc` processing unit object to which the specified thread should be affinitized.
@@ -106,6 +113,13 @@ static hwloc_obj_t spindleHelperGetThreadAffinityObject(hwloc_topology_t topolog
 // -------- FUNCTIONS ------------------------------------------------------ //
 // See "spindle.h" for documentation.
 
+bool spindleIsInParallelRegion(void)
+{
+    return inParallelRegion;
+}
+
+// --------
+
 uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, bool useCurrentThread)
 {
     SSpindleThreadInfo* threadAssignments = NULL;
@@ -126,6 +140,10 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
     uint32_t numThreadsRequested = 0;
     uint32_t numNumaNodes = 0;
     uint32_t totalNumThreads = 0;
+    
+    // Verify that a Spindle parallel region does not already exist.
+    if (false != spindleIsInParallelRegion())
+        return __LINE__;
     
     // It is trivially a success case if the number of tasks is zero.
     if (0 == taskCount)
@@ -379,8 +397,14 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
     free((void*)taskEndPhysCore);
     free((void*)taskNumThreads);
     
+    // Entering a Spindle parallel region.
+    inParallelRegion = true;
+    
     // Create the threads and wait for the result.
     threadResult = spindleCreateThreads(threadAssignments, totalNumThreads, useCurrentThread);
+    
+    // Exiting a Spindle parallel region.
+    inParallelRegion = false;
     
     // Free allocated memory and return.
     spindleFreeLocalThreadBarriers();

@@ -75,6 +75,8 @@
 
 .extern spindleThreadsSpawn
 
+.extern spindleIsInParallelRegion
+
 .extern spindleGetLocalThreadID
 
 .extern spindleGetGlobalThreadID

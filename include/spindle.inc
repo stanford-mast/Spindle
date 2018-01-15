@@ -72,6 +72,8 @@ ENDM
 
 EXTRN spindleThreadsSpawn:PROC
 
+EXTRN spindleIsInParallelRegion:PROC
+
 EXTRN spindleGetLocalThreadID:PROC
 
 EXTRN spindleGetGlobalThreadID:PROC

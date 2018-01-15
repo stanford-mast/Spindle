@@ -23,7 +23,8 @@
 /// 32-bit unsigned integer that represents the version of Spindle.
 /// Incremented each time a change is made that affects the API.
 /// - Version 1: Initial release.
-#define SPINDLE_LIBRARY_VERSION                 0x00000001
+/// - Version 2: Added #spindleIsInParallelRegion API function.
+#define SPINDLE_LIBRARY_VERSION                 0x00000002
 
 
 // -------- CONSTANTS ------------------------------------------------------ //
@@ -77,6 +78,11 @@ extern "C" {
 /// Retrieves and returns the compiled Spindle library version.
 /// @return Spindle library version number.
 uint32_t spindleGetLibraryVersion(void);
+
+/// Checks whether execution is happening within a Spindle parallelized region.
+/// Only one such region can exist at any time.
+/// @return `true` if so, `false` otherwise.
+bool spindleIsInParallelRegion(void);
 
 /// Spawns threads according to the provided task specification.
 /// NUMA node indices must appear in monotonically increasing order in the array, and only the last entry per NUMA node may specify 0 (automatically-determined) threads.
