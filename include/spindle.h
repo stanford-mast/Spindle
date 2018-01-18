@@ -137,6 +137,27 @@ uint64_t spindleTimedBarrierLocal(void);
 /// @return Number of cycles the calling thread spent waiting, captured using the `rdtsc` instruction.
 uint64_t spindleTimedBarrierGlobal(void);
 
+/// Shares a 64-bit data item with other threads in the same Spindle task.
+/// Only one thread in the task should call this function.
+/// @param [in] data Quantity that is to be shared.
+void spindleDataShareSendLocal(uint64_t data);
+
+/// Shares a 64-bit data item with all other Spindle-created threads.
+/// Only one thread should call this function.
+/// @param [in] data Quantity that is to be shared.
+void spindleDataShareSendGlobal(uint64_t data);
+
+/// Receives a 64-bit data item shared by another thread in the same Spindle task.
+/// All threads in the same task except the sender should call this function.
+/// @return [out] Shared data item.
+uint64_t spindleDataShareReceiveLocal(void);
+
+/// Receives a 64-bit data item shared by another Spindle-created thread.
+/// All threads except the sender should call this function.
+/// @return [out] Shared data item.
+uint64_t spindleDataShareReceiveGlobal(void);
+
+
 #ifdef __cplusplus
 }
 #endif

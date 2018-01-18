@@ -13,6 +13,7 @@
 
 #include "../spindle.h"
 #include "barrier.h"
+#include "datashare.h"
 #include "osthread.h"
 #include "types.h"
 
@@ -377,11 +378,21 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
         }
     }
     
-    // Allocate and initialize all thread barrier memory regions.
+    // Allocate and initialize all thread barrier and data sharing memory regions.
     spindleInitializeGlobalThreadBarrier(totalNumThreads);
+    
+    if (NULL == spindleAllocateDataShareBuffers(taskCount))
+    {
+        free((void*)taskStartPhysCore);
+        free((void*)taskEndPhysCore);
+        free((void*)taskNumThreads);
+        free((void*)threadAssignments);
+        return __LINE__;
+    }
     
     if (NULL == spindleAllocateLocalThreadBarriers(taskCount))
     {
+        spindleFreeDataShareBuffers();
         free((void*)taskStartPhysCore);
         free((void*)taskEndPhysCore);
         free((void*)taskNumThreads);
@@ -407,6 +418,7 @@ uint32_t spindleThreadsSpawn(SSpindleTaskSpec* taskSpec, uint32_t taskCount, boo
     inParallelRegion = false;
     
     // Free allocated memory and return.
+    spindleFreeDataShareBuffers();
     spindleFreeLocalThreadBarriers();
     free((void*)threadAssignments);
     return threadResult;

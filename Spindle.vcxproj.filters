@@ -30,12 +30,21 @@
     <ClInclude Include="include\spindle\barrier.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\spindle\datashare.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\spindle\align.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\spindle\helpers.inc">
       <Filter>Header Files</Filter>
     </None>
     <None Include="include\spindle\registers.inc">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="include\spindle.inc">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
@@ -52,7 +61,7 @@
     <ClCompile Include="source\barrier.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\version.c">
+    <ClCompile Include="source\datashare.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

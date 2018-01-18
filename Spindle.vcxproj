@@ -99,21 +99,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\spindle.h" />
+    <ClInclude Include="include\spindle\align.h" />
     <ClInclude Include="include\spindle\barrier.h" />
+    <ClInclude Include="include\spindle\datashare.h" />
     <ClInclude Include="include\spindle\init.h" />
     <ClInclude Include="include\spindle\osthread.h" />
     <ClInclude Include="include\spindle\types.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\spindle.inc" />
     <None Include="include\spindle\helpers.inc" />
     <None Include="include\spindle\registers.inc" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\barrier.c" />
+    <ClCompile Include="source\datashare.c" />
     <ClCompile Include="source\osthread-windows.c" />
     <ClCompile Include="source\osthread.c" />
     <ClCompile Include="source\spawn.c" />
-    <ClCompile Include="source\version.c" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="source\barrier.asm" />
