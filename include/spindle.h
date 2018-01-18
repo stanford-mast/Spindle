@@ -18,15 +18,6 @@
 #include <stdint.h>
 
 
-// -------- VERSION INFORMATION -------------------------------------------- //
-
-/// 32-bit unsigned integer that represents the version of Spindle.
-/// Incremented each time a change is made that affects the API.
-/// - Version 1: Initial release.
-/// - Version 2: Added #spindleIsInParallelRegion API function.
-#define SPINDLE_LIBRARY_VERSION                 0x00000002
-
-
 // -------- CONSTANTS ------------------------------------------------------ //
 
 /// In the `numThreads` field of #SSpindleTaskSpec, specifies to use all available threads on a NUMA node.
@@ -74,10 +65,6 @@ typedef struct SSpindleTaskSpec
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/// Retrieves and returns the compiled Spindle library version.
-/// @return Spindle library version number.
-uint32_t spindleGetLibraryVersion(void);
 
 /// Checks whether execution is happening within a Spindle parallelized region.
 /// Only one such region can exist at any time.
