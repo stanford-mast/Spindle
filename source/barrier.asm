@@ -83,13 +83,12 @@ spindleBarrier                              MACRO labelLoop, labelDone
     mov                     edx,                    DWORD PTR [r9]
 
     ; Atomically decrement the thread barrier counter and start waiting if needed.
-    mov                     eax,                    0ffffffffh
-    lock xadd               DWORD PTR [r8],         eax
+    lock sub                DWORD PTR [r8],         1
     jne                     labelLoop
 
     ; If all other threads have been here, clean up and signal them to wake up.
     mov                     DWORD PTR [r8],         ecx
-    inc                     DWORD PTR [r9]
+    add                     DWORD PTR [r9],         1
     jmp                     labelDone
 
     ; Wait here for the signal.
