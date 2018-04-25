@@ -26,6 +26,7 @@ OUTPUT_BASE_DIR             = output
 OUTPUT_DOCS_DIR             = $(OUTPUT_BASE_DIR)/docs
 OUTPUT_DIR                  = $(OUTPUT_BASE_DIR)/$(PLATFORM_NAME)
 OUTPUT_FILE                 = lib$(PROJECT_NAME).a
+INTERMEDIATE_DIR            = $(OUTPUT_DIR)/build
 
 C_SOURCE_SUFFIX             = .c
 CXX_SOURCE_SUFFIX           = .cpp
@@ -43,8 +44,8 @@ CXX                         = g++
 AS                          = as
 AR                          = ar
 
-CCFLAGS                     = -O3 -Wall -fPIC -std=c11 -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -D_GNU_SOURCE -DSPINDLE_LINUX
-CXXFLAGS                    = -O3 -Wall -fPIC -std=c++0x -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -DSPINDLE_LINUX
+CCFLAGS                     = -O3 -Wall -fPIC -std=c11 -masm=intel -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -D_GNU_SOURCE -DSPINDLE_LINUX
+CXXFLAGS                    = -O3 -Wall -fPIC -std=c++0x -masm=intel -march=core-avx-i -mno-vzeroupper -I$(INCLUDE_DIR) -DSPINDLE_LINUX
 ASFLAGS                     = --64 -mmnemonic=intel -msyntax=intel -mnaked-reg -I$(ASSEMBLY_INCLUDE_DIR) --defsym SPINDLE_LINUX=1
 ARFLAGS                     = 
 
@@ -63,9 +64,9 @@ MASM_HEADER_FILES           = $(wildcard $(INCLUDE_DIR)/*$(MASM_HEADER_SUFFIX))
 ASSEMBLY_SOURCE_FILES       = $(patsubst $(SOURCE_DIR)/%$(MASM_SOURCE_SUFFIX), $(ASSEMBLY_SOURCE_DIR)/%$(ASSEMBLY_SOURCE_SUFFIX), $(MASM_SOURCE_FILES))
 ASSEMBLY_HEADER_FILES       = $(patsubst $(INCLUDE_DIR)/%$(MASM_HEADER_SUFFIX), $(ASSEMBLY_INCLUDE_DIR)/%$(ASSEMBLY_HEADER_SUFFIX), $(MASM_HEADER_FILES))
 
-OBJECT_FILES_FROM_SOURCE    = $(patsubst $(SOURCE_DIR)/%, $(OUTPUT_DIR)/%$(OBJECT_FILE_SUFFIX), $(ALL_SOURCE_FILES))
-OBJECT_FILES_FROM_ASSEMBLY  = $(patsubst $(ASSEMBLY_SOURCE_DIR)/%, $(OUTPUT_DIR)/%$(OBJECT_FILE_SUFFIX), $(ASSEMBLY_SOURCE_FILES))
-DEP_FILES_FROM_SOURCE       = $(patsubst $(SOURCE_DIR)/%, $(OUTPUT_DIR)/%$(DEP_FILE_SUFFIX), $(ALL_SOURCE_FILES))
+OBJECT_FILES_FROM_SOURCE    = $(patsubst $(SOURCE_DIR)/%, $(INTERMEDIATE_DIR)/%$(OBJECT_FILE_SUFFIX), $(ALL_SOURCE_FILES))
+OBJECT_FILES_FROM_ASSEMBLY  = $(patsubst $(ASSEMBLY_SOURCE_DIR)/%, $(INTERMEDIATE_DIR)/%$(OBJECT_FILE_SUFFIX), $(ASSEMBLY_SOURCE_FILES))
+DEP_FILES_FROM_SOURCE       = $(patsubst $(SOURCE_DIR)/%, $(INTERMEDIATE_DIR)/%$(DEP_FILE_SUFFIX), $(ALL_SOURCE_FILES))
 
 
 # --------- TOP-LEVEL RULE CONFIGURATION --------------------------------------
@@ -114,21 +115,21 @@ clean:
 
 # --------- COMPILING AND ASSEMBLING RULES ------------------------------------
 
-$(OUTPUT_DIR):
-	@mkdir -p $(OUTPUT_DIR)
+$(INTERMEDIATE_DIR):
+	@mkdir -p $(INTERMEDIATE_DIR)
 
 $(OUTPUT_DOCS_DIR):
 	@mkdir -p $(OUTPUT_DOCS_DIR)
 
-$(OUTPUT_DIR)/%$(ASSEMBLY_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(ASSEMBLY_SOURCE_DIR)/%$(ASSEMBLY_SOURCE_SUFFIX) $(ASSEMBLY_HEADER_FILES) | $(OUTPUT_DIR)
+$(INTERMEDIATE_DIR)/%$(ASSEMBLY_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(ASSEMBLY_SOURCE_DIR)/%$(ASSEMBLY_SOURCE_SUFFIX) $(ASSEMBLY_HEADER_FILES) | $(INTERMEDIATE_DIR)
 	@echo '   AS        $@'
 	@$(AS) $(ASFLAGS) $< -o $@
 
-$(OUTPUT_DIR)/%$(C_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(SOURCE_DIR)/%$(C_SOURCE_SUFFIX) | $(OUTPUT_DIR)
+$(INTERMEDIATE_DIR)/%$(C_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(SOURCE_DIR)/%$(C_SOURCE_SUFFIX) | $(INTERMEDIATE_DIR)
 	@echo '   CC        $@'
 	@$(CC) $(CCFLAGS) -MD -MP -c -o $@ -Wa,-adhlms=$(patsubst %$(OBJECT_FILE_SUFFIX),%$(ASSEMBLY_SOURCE_SUFFIX),$@) $<
 
-$(OUTPUT_DIR)/%$(CXX_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(SOURCE_DIR)/%$(CXX_SOURCE_SUFFIX) | $(OUTPUT_DIR)
+$(INTERMEDIATE_DIR)/%$(CXX_SOURCE_SUFFIX)$(OBJECT_FILE_SUFFIX): $(SOURCE_DIR)/%$(CXX_SOURCE_SUFFIX) | $(INTERMEDIATE_DIR)
 	@echo '   CXX       $@'
 	@$(CXX) $(CXXFLAGS) -MD -MP -c -o $@ -Wa,-adhlms=$(patsubst %$(OBJECT_FILE_SUFFIX),%$(ASSEMBLY_SOURCE_SUFFIX),$@) $<
 
